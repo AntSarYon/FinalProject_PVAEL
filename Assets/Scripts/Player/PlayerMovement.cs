@@ -11,6 +11,7 @@ public enum MovementState
     inAir,
     crouching,
     wallRunning,
+    sliding,
     freeze
 
 };
@@ -21,17 +22,24 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 mDirection;
 
     //Capturamos ls inputs de Direccion
-    public float inputVertical;
-    public float inputHorizontal;
+    private float inputVertical;
+    private float inputHorizontal;
 
     //Variable para manejar el Estado de Movimiento
-    private MovementState movementState;
+    private MovementState state;
 
     [Header("Movimiento")]
     private float moveSpeed;
     [SerializeField] private float walkSpeed;
     [SerializeField] private float sprintSpeed;
     [SerializeField] private float crouchSpeed;
+    [SerializeField] private float slideSpeed;
+
+    [Header("Deslizamiento")]
+    //Variables para almacenar las proximas velocidades de movimiento deseadas
+    private float desiredMoveSpeed;
+    private float lastDesiredMoveSpeed;
+    private bool sliding;
 
     [Header("Salto")]
     [SerializeField] float jumpForce;
@@ -53,7 +61,7 @@ public class PlayerMovement : MonoBehaviour
     //Friccion del suelo
     [SerializeField] private float groundDrag;
     //Distancia de deteccion del sueli
-    private float groundDistance = 0.20f;
+    private float groundDistance = 0.25f;
     //Capa del Suelo a comprobar
     public LayerMask groundMask;
     //Flag para saber si esta, o no, en el suelo
@@ -74,6 +82,12 @@ public class PlayerMovement : MonoBehaviour
     private AudioSource mAudioSource;
     private Animator bodyAnimator;
 
+    public Animator BodyAnimator { get => bodyAnimator; set => bodyAnimator = value; }
+    public MovementState State { get => state; set => state = value; }
+    public float InputVertical { get => inputVertical; set => inputVertical = value; }
+    public float InputHorizontal { get => inputHorizontal; set => inputHorizontal = value; }
+    public bool Sliding { get => sliding; set => sliding = value; }
+
 
     //-------------------------------------------------------------
 
@@ -82,6 +96,9 @@ public class PlayerMovement : MonoBehaviour
         //Obtenemos referencia al componente RigidBody y congelamos su rotacion
         mRb = GetComponent<Rigidbody>();
         mRb.freezeRotation = true;
+
+        //Inicializamos el deslizamiento en Falso
+        sliding = false;
 
         //Obtenemos referencia al componente de audio
         //mAudioSource = GetComponent<AudioSource>();
@@ -94,23 +111,42 @@ public class PlayerMovement : MonoBehaviour
         originalCCHeight = body.GetComponent<CapsuleCollider>().height;
         originalCCRadius = body.GetComponent<CapsuleCollider>().radius;
 
-        bodyAnimator = body.GetComponent<Animator>();
+        BodyAnimator = body.GetComponent<Animator>();
     }
 
     //-------------------------------------------------------------
 
     private void StateHandler()
     {
+        if (sliding)
+        {
+            //Actualizamos el Estado de Movimiento
+            state = MovementState.sliding;
+
+            //Si estamos descendiendo por una pendiente
+            if (EnPendiente() && mRb.velocity.y < 0.1f)
+            {
+                //La velocidad deseada sera la de Deslizamiento
+                desiredMoveSpeed = slideSpeed;
+            }
+            //En caso no estemos descendiendo,
+            else
+            {
+                //La velocidad deseada sera la de Running
+                desiredMoveSpeed = sprintSpeed;
+            }
+        }
+
         //MODO - AGACHADO
-        if (Input.GetKey(KeyCode.C))
+        else if (Input.GetKey(KeyCode.C))
         {
             //Cambiamos el Estado y la velocidad de movimeinto
-            movementState = MovementState.crouching;
-            moveSpeed = crouchSpeed;
+            state = MovementState.crouching;
+            desiredMoveSpeed = crouchSpeed;
             //Activamos el Flag de Animacion de Agachado
-            bodyAnimator.SetBool("IsCrouch", true);
+            BodyAnimator.SetBool("IsCrouch", true);
             //Desactivamos el Flag de Animacion para Correr
-            bodyAnimator.SetBool("IsRunning", false);
+            BodyAnimator.SetBool("IsRunning", false);
         }
 
         //MODO - SPRINT
@@ -118,13 +154,13 @@ public class PlayerMovement : MonoBehaviour
         else if (grounded && Input.GetKey(KeyCode.LeftShift))
         {
             //Cambiamos el Estado y la velocidad de movimeinto
-            movementState = MovementState.sprinting;
-            moveSpeed = sprintSpeed;
+            state = MovementState.sprinting;
+            desiredMoveSpeed = sprintSpeed;
 
             //Activamos el Flag de Animacion para Correr
-            bodyAnimator.SetBool("IsRunning", true);
+            BodyAnimator.SetBool("IsRunning", true);
             //Desactivamos el Flag de Animacion de Agachado
-            bodyAnimator.SetBool("IsCrouch", false);
+            BodyAnimator.SetBool("IsCrouch", false);
         }
 
         //MODO - WALK
@@ -132,21 +168,37 @@ public class PlayerMovement : MonoBehaviour
         else if (grounded)
         {
             //Cambiamos el Estado y la velocidad de movimeinto
-            movementState = MovementState.walking;
-            moveSpeed = walkSpeed;
+            state = MovementState.walking;
+            desiredMoveSpeed = walkSpeed;
 
             //Desactivamos el Flag de Animacion para Correr
-            bodyAnimator.SetBool("IsRunning", false);
+            BodyAnimator.SetBool("IsRunning", false);
             //Desactivamos el Flag de Animacion de Agachado
-            bodyAnimator.SetBool("IsCrouch", false);
+            BodyAnimator.SetBool("IsCrouch", false);
         }
         //MODO - EN EL AIRE
         //Si no estamos en el suelo
         else
         {
             //Cambiamos el Estado para indicar que estamos ene el Aire
-            movementState = MovementState.inAir;
+            state = MovementState.inAir;
         }
+
+        //Comprobamos si la velocidad de Movimiento se modifico muy Bruscamente, y si seguimos moviendonos
+        if (Mathf.Abs(desiredMoveSpeed - lastDesiredMoveSpeed) > 4f && moveSpeed != 0)
+        {
+            //Llamamos a la rutina para conservar el Momentum de nuestra ultima velocidad
+            StopAllCoroutines();
+            StartCoroutine(ConservarMomentum());
+        }
+        //Casp contrario, asignamos directamente la velocidad deseada; pues esta es mayor
+        else
+        {
+            moveSpeed = desiredMoveSpeed;
+        }
+
+        //Guardamos la ultima velocidad que habiamos buscamos
+        lastDesiredMoveSpeed = desiredMoveSpeed;
         
     }
 
@@ -188,7 +240,7 @@ public class PlayerMovement : MonoBehaviour
 
     //--------------------------------------------------------------------------
 
-    private bool EnPendiente()
+    public bool EnPendiente()
     {
         //Si detectamos que hay una superficie debajo...
         if (Physics.Raycast(body.position, Vector3.down, out pendienteImpactada, 0.3f))
@@ -205,10 +257,10 @@ public class PlayerMovement : MonoBehaviour
 
     //------------------------------------------------------------------------------------------
 
-    private Vector3 ObtenerDireccionDePendiente()
+    public Vector3 ObtenerDireccionDePendiente(Vector3 direction)
     {
         //Obtenemos nuestra direccion Horizontal Proyectada en la Pendiente 
-        return Vector3.ProjectOnPlane(mDirection, pendienteImpactada.normal).normalized;
+        return Vector3.ProjectOnPlane(direction, pendienteImpactada.normal).normalized;
     }
 
     //-------------------------------------------------------------------------------------
@@ -254,7 +306,7 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.C))
         {
             //Activamos el Flag de Animacion de Agachado
-            bodyAnimator.SetBool("IsCrouch", true);
+            BodyAnimator.SetBool("IsCrouch", true);
 
             //Asignamos los nuevos valores al CapsuleCollider
             body.GetComponent<CapsuleCollider>().center = crouchCCCenter;
@@ -265,7 +317,7 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.C))
         {
             //Desactivamos el Flag de Animacion para levantarnos
-            bodyAnimator.SetBool("IsCrouch", false);
+            BodyAnimator.SetBool("IsCrouch", false);
 
             //Asignamos los valores originales al CapsuleCollider
             body.GetComponent<CapsuleCollider>().center = originalCCCenter;
@@ -282,6 +334,31 @@ public class PlayerMovement : MonoBehaviour
     }
 
     //----------------------------------------------------------------------
+    //Subrutina para conservar el MOMENTUM al cambiar la velocidad
+    private IEnumerator ConservarMomentum()
+    {
+        
+        float time = 0;
+        float difference = Mathf.Abs(desiredMoveSpeed - moveSpeed);
+        
+        //El valor inicial dera nuestra velocidad actual
+        float startValue = moveSpeed;
+
+        //Mientras el tiempo sea menor a la diferencia de velocidades...
+        while (time < difference)
+        {
+            //Usaremos una interpolacion para que el cambio de velocidad sea suave
+            moveSpeed = Mathf.Lerp(startValue, desiredMoveSpeed, time / difference);
+            //Incrementamos el Tiempo de Transicion
+            time += Time.deltaTime;
+            yield return null;
+
+        }
+        //Asignamos que la Velocidad de Movimiento sera la deseada
+        moveSpeed = desiredMoveSpeed;
+    }
+
+    //----------------------------------------------------------------------
     #region InputActions
 
     private void Move()
@@ -294,14 +371,14 @@ public class PlayerMovement : MonoBehaviour
         {
             //Activamos o desactivamos el Flag de animacion de Caminar dependiendo de
             //si nos estamos moviendo, o no
-            if (mDirection == Vector3.zero) bodyAnimator.SetBool("IsWalking", false);
-            else bodyAnimator.SetBool("IsWalking", true);
+            if (mDirection == Vector3.zero) BodyAnimator.SetBool("IsWalking", false);
+            else BodyAnimator.SetBool("IsWalking", true);
 
             //Si NO estamos saliendo(saltando) de ella
             if (!saliendoDePendiente)
             {
                 //Aplicamos una fuerza mayor en la direccion Proyectada 
-                mRb.AddForce(ObtenerDireccionDePendiente() * moveSpeed * 20f, ForceMode.Force);
+                mRb.AddForce(ObtenerDireccionDePendiente(mDirection) * moveSpeed * 20f, ForceMode.Force);
 
                 //Si nuestra velocidad en Y se ve afectada (rebotamos mientras subimos)
                 if (mRb.velocity.y > 0)
@@ -316,8 +393,8 @@ public class PlayerMovement : MonoBehaviour
         {
             //Activamos o desactivamos el Flag de animacion de Caminar dependiendo de
             //si nos estamos moviendo, o no
-            if (mDirection != Vector3.zero) bodyAnimator.SetBool("IsWalking", true);
-            else bodyAnimator.SetBool("IsWalking", false);
+            if (mDirection != Vector3.zero) BodyAnimator.SetBool("IsWalking", true);
+            else BodyAnimator.SetBool("IsWalking", false);
 
             //Aplicamos una fuerza al RB del Player para moverlo
             mRb.AddForce(mDirection.normalized * moveSpeed * 10f, ForceMode.Force);
@@ -358,6 +435,10 @@ public class PlayerMovement : MonoBehaviour
 
                 //Reiniciamos la velocidad en Y
                 mRb.velocity = new Vector3(mRb.velocity.x, 0f, mRb.velocity.z);
+
+                //Disparamos el Trigger de Animacion para saltar
+                bodyAnimator.SetTrigger("Jump");
+
                 //Saltamos A?adiendo una fuerza de impulso
                 mRb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
 

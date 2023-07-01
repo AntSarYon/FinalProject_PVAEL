@@ -15,23 +15,14 @@ public class Sliding : MonoBehaviour
     [SerializeField] private float maxSlideTime;
     [SerializeField] private float slideForce;
     private float slideTimer;
-    private bool sliding;
 
-    private float slideCCRadius = 0.6363066f;
-    private float slideCCHeight = 1.372868f;
-    private Vector3 slideCCCenter = new Vector3(0f, 0.670045912f, 0.276306629f);
+    private float slideCCRadius = 0.3036255f;
+    private float slideCCHeight = 2.043422f;
+    private Vector3 slideCCCenter = new Vector3(0, 0.311746418f, 0.101016998f);
 
     private float originalCCRadius;
     private float originalCCHeight;
     private Vector3 originalCCCenter;
-
-    //------------------------------------------------------------------------------------
-
-    private void Awake()
-    {
-        //Inicializamos el Flag de DESLIZANDOSE en falso
-        sliding = false;
-    }
 
     //----------------------------------------------------------------------------------------
 
@@ -50,16 +41,17 @@ public class Sliding : MonoBehaviour
 
     private void Update()
     {
-        //Si se oprime la tecla Control, y se esta recibiendo Input en alguna direccion
+        //Si se oprime la tecla Control, y se esta recibiendo Input en alguna direccion, y estamos CAMINANDO, o CORRIENDO
         if (Input.GetKeyDown(KeyCode.LeftControl) && 
-            (playerController.inputHorizontal !=0 || playerController.inputVertical != 0))
+            (playerController.InputHorizontal !=0 || playerController.InputVertical != 0) && 
+            (playerController.State == MovementState.walking || playerController.State == MovementState.sprinting))
         {
             //Empezamos el Deslizamiento
             StartSlide();
         }
 
         //En caso se suelte la tecla Control, y ya estemos deslizandonos
-        if (Input.GetKeyUp(KeyCode.LeftControl) && sliding)
+        if (Input.GetKeyUp(KeyCode.LeftControl) && playerController.Sliding)
         {
             //Terminamos el Deslizamiento
             StopSlide();
@@ -71,7 +63,7 @@ public class Sliding : MonoBehaviour
     private void FixedUpdate()
     {
         //Si ya estamos deslizandonos
-        if (sliding)
+        if (playerController.Sliding)
         {
             //Ejecutamos el Movimiento de Deslizamiento
             SlidingMovement();
@@ -83,8 +75,13 @@ public class Sliding : MonoBehaviour
     private void StartSlide()
     {
         //Activamos el Flag de "DESLIZANDOSE"
-        sliding = true;
+        playerController.Sliding = true;
 
+        //Disparamos el Trigger de Animacion para el Deslizamiento
+        playerController.BodyAnimator.SetTrigger("Slide");
+
+        //Convertimos la Direccion del CapsuleCollider al EjeZ
+        playerBody.GetComponent<CapsuleCollider>().direction = 2;
         //Asignamos los nuevos valores al CapsuleCollider
         playerBody.GetComponent<CapsuleCollider>().center = slideCCCenter;
         playerBody.GetComponent<CapsuleCollider>().height = slideCCHeight;
@@ -100,14 +97,27 @@ public class Sliding : MonoBehaviour
     {
         //Obtenemos la direccion en la que ocurrira el deslizamiento
         Vector3 inputDirection = 
-            playerOrientation.forward * playerController.inputVertical +
-            playerOrientation.right * playerController.inputHorizontal;
+            playerOrientation.forward * playerController.InputVertical +
+            playerOrientation.right * playerController.InputHorizontal;
 
-        //Aplicamos la Fuerza de Deslizamiento en la direccion respectiva
-        mRB.AddForce(inputDirection.normalized * slideForce, ForceMode.Force);
+        //Si el Jugador NO ESTA en una pendiente o tiene velocidad vertical CASI NULA
+        if (!playerController.EnPendiente() || mRB.velocity.y > -0.1f)
+        {
+            //DESLIZAMIENTO NORMAL!
+            //Aplicamos la Fuerza de Deslizamiento en la direccion respectiva
+            mRB.AddForce(inputDirection.normalized * slideForce, ForceMode.Force);
 
-        //Disminuimos el Timer de Deslizamiento
-        slideTimer -= Time.deltaTime;
+            //Disminuimos el Timer de Deslizamiento
+            slideTimer -= Time.deltaTime;
+        }
+        //Si el jugador esta en una pendiente
+        else 
+        {
+            //Aplicamos fuerza en la direccion de Descenso de la Pendiente
+            mRB.AddForce(playerController.ObtenerDireccionDePendiente(inputDirection).normalized * slideForce, ForceMode.Force);
+            //OJO -< AQUI El timer no se esta restando, por lo que podemos deslizarnos infinitamente
+        }
+
 
         //Si el timer llega a 0
         if (slideTimer <= 0)
@@ -122,8 +132,10 @@ public class Sliding : MonoBehaviour
     private void StopSlide()
     {
         //Desactivamos el Flag de "DESLIZANDOSE"
-        sliding = false;
+        playerController.Sliding = false;
 
+        //Restauramos la Direccion del CapsuleCollider al EjeY
+        playerBody.GetComponent<CapsuleCollider>().direction = 1;
         //Asignamos los valores del CapsuleCollider de vuelta a la normalidad
         playerBody.GetComponent<CapsuleCollider>().center = originalCCCenter;
         playerBody.GetComponent<CapsuleCollider>().height = originalCCHeight;

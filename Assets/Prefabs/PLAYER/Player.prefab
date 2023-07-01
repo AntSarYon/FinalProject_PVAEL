@@ -124,8 +124,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerOrientation: {fileID: 5898225462157031088}
   playerBody: {fileID: 6219486151458953500}
-  maxSlideTime: 2
-  slideForce: 20
+  maxSlideTime: 1.25
+  slideForce: 200
 --- !u!1 &5898225462157031089
 GameObject:
   m_ObjectHideFlags: 0
