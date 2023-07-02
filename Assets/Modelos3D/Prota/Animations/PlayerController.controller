@@ -688,7 +688,7 @@ AnimatorStateTransition:
   m_TransitionDuration: 0.25
   m_TransitionOffset: 0
   m_ExitTime: 0.73214287
-  m_HasExitTime: 1
+  m_HasExitTime: 0
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
@@ -1065,7 +1065,7 @@ AnimatorStateTransition:
   m_TransitionDuration: 0.25
   m_TransitionOffset: 0
   m_ExitTime: 0.73214287
-  m_HasExitTime: 1
+  m_HasExitTime: 0
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
@@ -1322,6 +1322,12 @@ AnimatorStateTransition:
   - m_ConditionMode: 1
     m_ConditionEvent: Falling
     m_EventTreshold: 0
+  - m_ConditionMode: 2
+    m_ConditionEvent: LeftWallRun
+    m_EventTreshold: 0
+  - m_ConditionMode: 2
+    m_ConditionEvent: RightWallRun
+    m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -4206482967065886772}
   m_Solo: 0
@@ -1446,10 +1452,10 @@ AnimatorStateMachine:
     m_Position: {x: 770, y: 320, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 4843772991660433440}
-    m_Position: {x: 850, y: 1350, z: 0}
+    m_Position: {x: 850, y: 1340, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -8757130096917155400}
-    m_Position: {x: -10, y: 1360, z: 0}
+    m_Position: {x: -20, y: 1340, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -4206482967065886772}
     m_Position: {x: 400, y: 1330, z: 0}
@@ -1499,7 +1505,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Climbing
-  m_Speed: 3
+  m_Speed: 3.85
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: -1968203060940254204}
