@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5898225461059944022}
   - component: {fileID: 5898225461059944011}
   - component: {fileID: 5898225461059944020}
+  - component: {fileID: 5882989814245395496}
   - component: {fileID: 5898225461059944010}
   m_Layer: 0
   m_Name: Player
@@ -99,8 +100,9 @@ MonoBehaviour:
   sprintSpeed: 8
   crouchSpeed: 3
   slideSpeed: 20
+  wallRunSpeed: 8.5
   jumpForce: 6.5
-  jumpCooldown: 0.25
+  jumpCooldown: 1.2
   airMultiplier: 0.1
   groundDrag: 5
   groundMask:
@@ -109,6 +111,35 @@ MonoBehaviour:
   maximoAnguloDePendiente: 40
   body: {fileID: 6219486151458953500}
   orientation: {fileID: 5898225462157031088}
+--- !u!114 &5882989814245395496
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5898225461059944023}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 547e27349a2dd8d4fb732fac68a6573b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  capaSuelo:
+    serializedVersion: 2
+    m_Bits: 64
+  capaMuros:
+    serializedVersion: 2
+    m_Bits: 128
+  camara: {fileID: 0}
+  wallRunForce: 200
+  maxWallRunTime: 1
+  wallClimbSpeed: 3
+  wallJumpUpForce: 6
+  wallJumpSideForce: 12
+  useGravity: 0
+  gravityCounterFource: 10
+  exitWallTime: 0.2
+  playerOrientation: {fileID: 5898225462157031088}
+  playerBody: {fileID: 6219486151458953500}
 --- !u!114 &5898225461059944010
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -210,6 +241,22 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: ffb452f8e34fa7a499e4a629de66ec7b, type: 3}
       propertyPath: m_Name
       value: PlayerBody
+      objectReference: {fileID: 0}
+    - target: {fileID: 7078722787440015773, guid: ffb452f8e34fa7a499e4a629de66ec7b, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.3595063
+      objectReference: {fileID: 0}
+    - target: {fileID: 7078722787440015773, guid: ffb452f8e34fa7a499e4a629de66ec7b, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.5471022
+      objectReference: {fileID: 0}
+    - target: {fileID: 7078722787440015773, guid: ffb452f8e34fa7a499e4a629de66ec7b, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.5914038
+      objectReference: {fileID: 0}
+    - target: {fileID: 7078722787440015773, guid: ffb452f8e34fa7a499e4a629de66ec7b, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.47082493
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ffb452f8e34fa7a499e4a629de66ec7b, type: 3}

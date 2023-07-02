@@ -34,6 +34,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float sprintSpeed;
     [SerializeField] private float crouchSpeed;
     [SerializeField] private float slideSpeed;
+    [SerializeField] private float wallRunSpeed;
 
     [Header("Deslizamiento")]
     //Variables para almacenar las proximas velocidades de movimiento deseadas
@@ -56,6 +57,9 @@ public class PlayerMovement : MonoBehaviour
     private float originalCCRadius;
     private float originalCCHeight;
     private Vector3 originalCCCenter;
+
+    [Header("Wall Run")]
+    private bool wallRunning;
 
     [Header("Comprobar Suelo")]
     //Friccion del suelo
@@ -87,6 +91,7 @@ public class PlayerMovement : MonoBehaviour
     public float InputVertical { get => inputVertical; set => inputVertical = value; }
     public float InputHorizontal { get => inputHorizontal; set => inputHorizontal = value; }
     public bool Sliding { get => sliding; set => sliding = value; }
+    public bool WallRunning { get => wallRunning; set => wallRunning = value; }
 
 
     //-------------------------------------------------------------
@@ -97,8 +102,9 @@ public class PlayerMovement : MonoBehaviour
         mRb = GetComponent<Rigidbody>();
         mRb.freezeRotation = true;
 
-        //Inicializamos el deslizamiento en Falso
+        //Inicializamos flags en Falso
         sliding = false;
+        wallRunning = false;
 
         //Obtenemos referencia al componente de audio
         //mAudioSource = GetComponent<AudioSource>();
@@ -118,7 +124,15 @@ public class PlayerMovement : MonoBehaviour
 
     private void StateHandler()
     {
-        if (sliding)
+        //MODO -  Wall Running...
+        if (wallRunning)
+        {
+            state = MovementState.wallRunning;
+            desiredMoveSpeed = wallRunSpeed;
+        }
+
+        //MODO - Deslizandose
+        else if (sliding)
         {
             //Actualizamos el Estado de Movimiento
             state = MovementState.sliding;
@@ -401,14 +415,21 @@ public class PlayerMovement : MonoBehaviour
         }
 
         //Si estamos en el Aire
-        else
+        else if(!grounded) 
         {
             //Aplicamos una fuerza, incluyendo el multiplicador de Aire
             mRb.AddForce(mDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
         }
 
-        //Modificamos la Gravedad cuando estamos en la pendiente
-        mRb.useGravity = !EnPendiente();
+        //Si no estamos haciendo EallRunning
+        if (!wallRunning)
+        {
+            //Modificamos la Gravedad cuando estamos en la pendiente
+            mRb.useGravity = !EnPendiente();
+        }
+
+        
+
 
     }
 
