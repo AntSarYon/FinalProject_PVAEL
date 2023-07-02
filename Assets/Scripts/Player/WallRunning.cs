@@ -27,7 +27,7 @@ public class WallRunning : MonoBehaviour
     
     [Header("Detección")]
     private float wallCheckDistance = 0.65f;
-    private float minJumpHeight = 0.35f;
+    private float minJumpHeight = 0.7f;
 
     private RaycastHit leftWallHit;
     private RaycastHit rightWallHit;
@@ -48,12 +48,18 @@ public class WallRunning : MonoBehaviour
     private Animator bodyAnimator;
 
     //-----------------------------------------------------------
-
-    private void Start()
+    private void Awake()
     {
         //Obtenemos referencia a Componentes
         playerController = GetComponent<PlayerMovement>();
         mRb = GetComponent<Rigidbody>();
+    }
+
+    //------------------------------------------------------------------
+
+    private void Start()
+    {
+        
         bodyAnimator = playerBody.GetComponent<Animator>();
     }
 

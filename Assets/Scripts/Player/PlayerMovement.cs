@@ -9,6 +9,7 @@ public enum MovementState
     walking,
     sprinting,
     inAir,
+    climbing,
     crouching,
     wallRunning,
     sliding,
@@ -35,6 +36,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float crouchSpeed;
     [SerializeField] private float slideSpeed;
     [SerializeField] private float wallRunSpeed;
+    [SerializeField] private float climbSpeed;
 
     [Header("Deslizamiento")]
     //Variables para almacenar las proximas velocidades de movimiento deseadas
@@ -60,6 +62,10 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Wall Run")]
     private bool wallRunning;
+
+    [Header("CLIMBING")]
+    private bool climbing;
+
 
     [Header("Comprobar Suelo")]
     //Friccion del suelo
@@ -92,6 +98,8 @@ public class PlayerMovement : MonoBehaviour
     public float InputHorizontal { get => inputHorizontal; set => inputHorizontal = value; }
     public bool Sliding { get => sliding; set => sliding = value; }
     public bool WallRunning { get => wallRunning; set => wallRunning = value; }
+    public bool Grounded { get => grounded; set => grounded = value; }
+    public bool Climbing { get => climbing; set => climbing = value; }
 
 
     //-------------------------------------------------------------
@@ -124,8 +132,14 @@ public class PlayerMovement : MonoBehaviour
 
     private void StateHandler()
     {
+        if (climbing)
+        {
+            state = MovementState.climbing;
+            desiredMoveSpeed = climbSpeed;
+        }
+
         //MODO -  Wall Running...
-        if (wallRunning)
+        else if (wallRunning)
         {
             state = MovementState.wallRunning;
             desiredMoveSpeed = wallRunSpeed;
@@ -196,6 +210,14 @@ public class PlayerMovement : MonoBehaviour
         {
             //Cambiamos el Estado para indicar que estamos ene el Aire
             state = MovementState.inAir;
+            
+            //Si no detectamos Suelo a una Altura de 1.5 m
+            if (!Physics.Raycast(body.position, Vector3.down, 1.5f, groundMask))
+            {
+                //Activamos el Flag de ANimacion para la Caida
+                bodyAnimator.SetBool("Falling", true);
+            }
+            
         }
 
         //Comprobamos si la velocidad de Movimiento se modifico muy Bruscamente, y si seguimos moviendonos
@@ -244,6 +266,10 @@ public class PlayerMovement : MonoBehaviour
         //Seteamos la Friccion dependiendo de si estamos en el suelo, o no
         if (grounded)
         {
+            //Desactivamos el Flag de ANimacion para la Caida
+            bodyAnimator.SetBool("Falling", false);
+
+            //Asignamos la resistencia del suelo
             mRb.drag = groundDrag;
         }
         else

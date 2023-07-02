@@ -16,13 +16,13 @@ public class Sliding : MonoBehaviour
     [SerializeField] private float slideForce;
     private float slideTimer;
 
-    private float slideCCRadius = 0.3036255f;
+    /*private float slideCCRadius = 0.3036255f;
     private float slideCCHeight = 2.043422f;
     private Vector3 slideCCCenter = new Vector3(0, 0.311746418f, 0.101016998f);
 
     private float originalCCRadius;
     private float originalCCHeight;
-    private Vector3 originalCCCenter;
+    private Vector3 originalCCCenter;*/
 
     //----------------------------------------------------------------------------------------
 
@@ -31,10 +31,10 @@ public class Sliding : MonoBehaviour
         mRB = GetComponent<Rigidbody>();
         playerController = GetComponent<PlayerMovement>();
 
-        //Capturamos la informacion del CapsuleCollider del Personaje
+        /*//Capturamos la informacion del CapsuleCollider del Personaje
         originalCCCenter = playerBody.GetComponent<CapsuleCollider>().center;
         originalCCHeight = playerBody.GetComponent<CapsuleCollider>().height;
-        originalCCRadius = playerBody.GetComponent<CapsuleCollider>().radius;
+        originalCCRadius = playerBody.GetComponent<CapsuleCollider>().radius;*/
     }
 
     //------------------------------------------------------------------------------------
@@ -81,11 +81,11 @@ public class Sliding : MonoBehaviour
         playerController.BodyAnimator.SetTrigger("Slide");
 
         //Convertimos la Direccion del CapsuleCollider al EjeZ
-        playerBody.GetComponent<CapsuleCollider>().direction = 2;
+        /*playerBody.GetComponent<CapsuleCollider>().direction = 2;
         //Asignamos los nuevos valores al CapsuleCollider
         playerBody.GetComponent<CapsuleCollider>().center = slideCCCenter;
         playerBody.GetComponent<CapsuleCollider>().height = slideCCHeight;
-        playerBody.GetComponent<CapsuleCollider>().radius = slideCCRadius;
+        playerBody.GetComponent<CapsuleCollider>().radius = slideCCRadius;*/
 
         //Asignamos el maximo valor al Timer para empezar la cuenta atras
         slideTimer = maxSlideTime;
@@ -134,12 +134,12 @@ public class Sliding : MonoBehaviour
         //Desactivamos el Flag de "DESLIZANDOSE"
         playerController.Sliding = false;
 
-        //Restauramos la Direccion del CapsuleCollider al EjeY
+        /*/Restauramos la Direccion del CapsuleCollider al EjeY
         playerBody.GetComponent<CapsuleCollider>().direction = 1;
         //Asignamos los valores del CapsuleCollider de vuelta a la normalidad
         playerBody.GetComponent<CapsuleCollider>().center = originalCCCenter;
         playerBody.GetComponent<CapsuleCollider>().height = originalCCHeight;
-        playerBody.GetComponent<CapsuleCollider>().radius = originalCCRadius;
+        playerBody.GetComponent<CapsuleCollider>().radius = originalCCRadius;*/
     }
 
 }

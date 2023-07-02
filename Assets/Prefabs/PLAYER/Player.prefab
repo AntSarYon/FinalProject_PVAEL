@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 5898225461059944020}
   - component: {fileID: 5882989814245395496}
   - component: {fileID: 5898225461059944010}
+  - component: {fileID: 3688008459960733205}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -100,14 +101,15 @@ MonoBehaviour:
   sprintSpeed: 8
   crouchSpeed: 3
   slideSpeed: 20
-  wallRunSpeed: 8.5
+  wallRunSpeed: 10
+  climbSpeed: 2
   jumpForce: 6.5
   jumpCooldown: 1.2
   airMultiplier: 0.1
   groundDrag: 5
   groundMask:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 192
   maximoAnguloDePendiente: 40
   body: {fileID: 6219486151458953500}
   orientation: {fileID: 5898225462157031088}
@@ -131,13 +133,13 @@ MonoBehaviour:
     m_Bits: 128
   camara: {fileID: 0}
   wallRunForce: 200
-  maxWallRunTime: 1
+  maxWallRunTime: 0.65
   wallClimbSpeed: 3
-  wallJumpUpForce: 6
-  wallJumpSideForce: 12
+  wallJumpUpForce: 5
+  wallJumpSideForce: 14
   useGravity: 0
   gravityCounterFource: 10
-  exitWallTime: 0.2
+  exitWallTime: 0.25
   playerOrientation: {fileID: 5898225462157031088}
   playerBody: {fileID: 6219486151458953500}
 --- !u!114 &5898225461059944010
@@ -156,6 +158,28 @@ MonoBehaviour:
   playerBody: {fileID: 6219486151458953500}
   maxSlideTime: 1.25
   slideForce: 200
+--- !u!114 &3688008459960733205
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5898225461059944023}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3cf2199af0b3f9c41b24cb3c6e7f3a88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerOrientation: {fileID: 5898225462157031088}
+  playerBody: {fileID: 6219486151458953500}
+  wallLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  climbSpeed: 4
+  maxClimbTime: 1.5
+  detectionLength: 0.7
+  sphereCastRadius: 0.25
+  maxWallLookAngle: 30
 --- !u!1 &5898225462157031089
 GameObject:
   m_ObjectHideFlags: 0
@@ -280,7 +304,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.36
+  m_Radius: 0.4
   m_Height: 1.8413882
   m_Direction: 1
   m_Center: {x: 0, y: 0.90430593, z: 0}

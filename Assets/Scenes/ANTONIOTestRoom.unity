@@ -1847,18 +1847,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 5882989814245395496, guid: 474b18e0ee7506840ac1d5b5f298413a, type: 3}
-      propertyPath: exitWallTime
-      value: 0.25
-      objectReference: {fileID: 0}
-    - target: {fileID: 5882989814245395496, guid: 474b18e0ee7506840ac1d5b5f298413a, type: 3}
-      propertyPath: maxWallRunTime
-      value: 0.65
-      objectReference: {fileID: 0}
-    - target: {fileID: 5898225461059944020, guid: 474b18e0ee7506840ac1d5b5f298413a, type: 3}
-      propertyPath: wallRunSpeed
-      value: 10
-      objectReference: {fileID: 0}
     - target: {fileID: 5898225461059944021, guid: 474b18e0ee7506840ac1d5b5f298413a, type: 3}
       propertyPath: m_RootOrder
       value: 4
@@ -1906,22 +1894,6 @@ PrefabInstance:
     - target: {fileID: 5898225461059944023, guid: 474b18e0ee7506840ac1d5b5f298413a, type: 3}
       propertyPath: m_Name
       value: Player
-      objectReference: {fileID: 0}
-    - target: {fileID: 5898225461696233204, guid: 474b18e0ee7506840ac1d5b5f298413a, type: 3}
-      propertyPath: m_Height
-      value: 1.8413882
-      objectReference: {fileID: 0}
-    - target: {fileID: 5898225461696233204, guid: 474b18e0ee7506840ac1d5b5f298413a, type: 3}
-      propertyPath: m_Radius
-      value: 0.4
-      objectReference: {fileID: 0}
-    - target: {fileID: 5898225461696233204, guid: 474b18e0ee7506840ac1d5b5f298413a, type: 3}
-      propertyPath: m_Center.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5898225461696233204, guid: 474b18e0ee7506840ac1d5b5f298413a, type: 3}
-      propertyPath: m_Center.y
-      value: 0.90430593
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 474b18e0ee7506840ac1d5b5f298413a, type: 3}
