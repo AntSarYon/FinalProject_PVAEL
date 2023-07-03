@@ -71,7 +71,7 @@ public class PlayerMovement : MonoBehaviour
     //Friccion del suelo
     [SerializeField] private float groundDrag;
     //Distancia de deteccion del sueli
-    private float groundDistance = 0.25f;
+    private float groundDistance = 0.3f;
     //Capa del Suelo a comprobar
     public LayerMask groundMask;
     //Flag para saber si esta, o no, en el suelo
@@ -88,6 +88,8 @@ public class PlayerMovement : MonoBehaviour
     [Header("Orientacion")]
     [SerializeField] private Transform orientation;
 
+    [Header("REFERENCIAS")]
+    private Climbing climbingScript;
     private Rigidbody mRb;
     private AudioSource mAudioSource;
     private Animator bodyAnimator;
@@ -106,6 +108,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void Awake()
     {
+        //Obtenemos referencia al Script para Trepar
+        climbingScript = GetComponent<Climbing>();
+
         //Obtenemos referencia al componente RigidBody y congelamos su rotacion
         mRb = GetComponent<Rigidbody>();
         mRb.freezeRotation = true;
@@ -210,12 +215,19 @@ public class PlayerMovement : MonoBehaviour
         {
             //Cambiamos el Estado para indicar que estamos ene el Aire
             state = MovementState.inAir;
-            
+
+            Vector3 inicioDeteccionCaida = new Vector3(body.position.x, body.position.y + 0.5f, body.position.z);
+
             //Si no detectamos Suelo a una Altura de 1.5 m
-            if (!Physics.Raycast(body.position, Vector3.down, 1.5f, groundMask))
+            if (!Physics.Raycast(inicioDeteccionCaida, Vector3.down, 1f, groundMask))
             {
                 //Activamos el Flag de ANimacion para la Caida
                 bodyAnimator.SetBool("Falling", true);
+            }
+            else
+            {
+                //Desactivamos el Flag de ANimacion para la Caida
+                bodyAnimator.SetBool("Falling", false);
             }
             
         }
@@ -245,7 +257,11 @@ public class PlayerMovement : MonoBehaviour
 
         //Capturamos ls inputs de Direccion
         inputVertical = Input.GetAxisRaw("Vertical");
-        inputHorizontal = Input.GetAxisRaw("Horizontal");
+
+        //Controlamos la Captura de Input Horizontal si es que estamos haciendo WallRunning
+        if (!wallRunning) inputHorizontal = Input.GetAxisRaw("Horizontal");
+        else inputHorizontal = 0;
+
 
         StateHandler();
 
@@ -260,8 +276,10 @@ public class PlayerMovement : MonoBehaviour
     //-------------------------------------------------------------------------------------------
     private void GroundControl()
     {
+        Vector3 inicioDeteccionCaida = new Vector3(body.position.x, body.position.y + 0.5f, body.position.z);
+
         //Revision de Suelo con un Raycast (rayo hacia el suelo con 1 unidad de largo)
-        grounded = Physics.Raycast(body.position, Vector3.down, groundDistance, groundMask);
+        grounded = Physics.Raycast(inicioDeteccionCaida, Vector3.down, groundDistance + 0.5f, groundMask);
         
         //Seteamos la Friccion dependiendo de si estamos en el suelo, o no
         if (grounded)
@@ -275,6 +293,8 @@ public class PlayerMovement : MonoBehaviour
         else
         {
             mRb.drag = 0f;
+            //Desactivamos el Flag de ANimacion para la Caida
+            bodyAnimator.SetBool("Falling", true);
         }
     }
 
@@ -403,6 +423,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void Move()
     {
+        //Para empezar, Si estamos saliendo de una apred; no hagas nada
+        if (climbingScript.ExitingWall) return;
+
         //Asignamos la direccion de movimeinto considerando la orientacion del Player
         mDirection = orientation.forward * inputVertical + orientation.right * inputHorizontal;
 
@@ -511,6 +534,12 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        Gizmos.DrawRay(body.position, Vector3.down * groundDistance);
+        Vector3 inicioDeteccionCaida = new Vector3(body.position.x, body.position.y + 0.5f, body.position.z);
+        Gizmos.DrawRay(inicioDeteccionCaida, Vector3.down * (groundDistance + 0.5f));
+
+
+        //Gizmos.DrawRay(inicioDeteccionCaida, Vector3.down * 1f);
+
+
     }
 }

@@ -90,8 +90,6 @@ public class WallRunning : MonoBehaviour
         RevisarParedes();
 
         StateMachine();
-
-        print(wallRunTimer);
     }
 
     //-----------------------------------------------------------------------------------------
@@ -135,8 +133,10 @@ public class WallRunning : MonoBehaviour
             if (wallRunTimer <= 0 && playerController.WallRunning)
             {
                 //Activamos el Flag para salir de la Pared
-                exitingWall = true;
-                exitWallTIMER = exitWallTime;
+                //exitingWall = true;
+                //exitWallTIMER = exitWallTime;
+
+                FallingFromWall();
             }
 
             //Si el jugador pulsa espacio
@@ -288,6 +288,25 @@ public class WallRunning : MonoBehaviour
 
         //Calculamos la fuerza a aplicar
         Vector3 fuerzaAAplicar = (transform.up * wallJumpUpForce) + (wallNormal * wallJumpSideForce);
+
+        //Reiniciamos la velocidad vertical a 0
+        mRb.velocity = new Vector3(mRb.velocity.x, 0f, mRb.velocity.z);
+
+        //Añadimos fuerza como un impulso
+        mRb.AddForce(fuerzaAAplicar, ForceMode.Impulse);
+    }
+
+    private void FallingFromWall()
+    {
+        //Entramos al estado de SALIENDO DE PARED
+        exitingWall = true;
+        exitWallTIMER = exitWallTime;
+
+        //Obtenemos la normal de la Pared con la que entramos en contacto
+        Vector3 wallNormal = wallRight ? rightWallHit.normal : leftWallHit.normal;
+
+        //Calculamos la fuerza a aplicar
+        Vector3 fuerzaAAplicar = (transform.up * 2) + (wallNormal * 4);
 
         //Reiniciamos la velocidad vertical a 0
         mRb.velocity = new Vector3(mRb.velocity.x, 0f, mRb.velocity.z);

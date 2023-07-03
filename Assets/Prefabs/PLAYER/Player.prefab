@@ -133,13 +133,13 @@ MonoBehaviour:
     m_Bits: 128
   camara: {fileID: 0}
   wallRunForce: 200
-  maxWallRunTime: 0.65
+  maxWallRunTime: 0.7
   wallClimbSpeed: 3
   wallJumpUpForce: 5
-  wallJumpSideForce: 12
+  wallJumpSideForce: 8
   useGravity: 0
   gravityCounterFource: 10
-  exitWallTime: 0.25
+  exitWallTime: 0.2
   playerOrientation: {fileID: 5898225462157031088}
   playerBody: {fileID: 6219486151458953500}
 --- !u!114 &5898225461059944010
@@ -176,7 +176,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   climbSpeed: 2
-  maxClimbTime: 1
+  maxClimbTime: 5
   detectionLength: 0.7
   sphereCastRadius: 0.25
   maxWallLookAngle: 30
