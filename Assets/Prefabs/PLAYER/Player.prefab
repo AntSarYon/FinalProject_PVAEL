@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &207457222
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 207457223}
+  m_Layer: 0
+  m_Name: CombatLookAt
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &207457223
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 207457222}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.5, y: 0.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5898225462157031088}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5898225461059944023
 GameObject:
   m_ObjectHideFlags: 0
@@ -17,7 +48,7 @@ GameObject:
   - component: {fileID: 3688008459960733205}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -98,7 +129,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   walkSpeed: 5
-  sprintSpeed: 8
+  sprintSpeed: 10
   crouchSpeed: 3
   slideSpeed: 20
   wallRunSpeed: 10
@@ -133,7 +164,7 @@ MonoBehaviour:
     m_Bits: 128
   camara: {fileID: 0}
   wallRunForce: 200
-  maxWallRunTime: 0.7
+  maxWallRunTime: 0.8
   wallClimbSpeed: 3
   wallJumpUpForce: 5
   wallJumpSideForce: 8
@@ -177,9 +208,14 @@ MonoBehaviour:
     m_Bits: 128
   climbSpeed: 2
   maxClimbTime: 5
+  climbJumpUpForce: 6
+  climbJumpBackForce: 15
+  climbJumps: 1
+  minWallNormalAngleChange: 5
   detectionLength: 0.7
   sphereCastRadius: 0.25
   maxWallLookAngle: 30
+  exitWallTime: 2
 --- !u!1 &5898225462157031089
 GameObject:
   m_ObjectHideFlags: 0
@@ -191,7 +227,7 @@ GameObject:
   - component: {fileID: 5898225462157031088}
   m_Layer: 0
   m_Name: Orientation
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -207,7 +243,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 207457223}
   m_Father: {fileID: 5898225461059944021}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -265,6 +302,18 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: ffb452f8e34fa7a499e4a629de66ec7b, type: 3}
       propertyPath: m_Name
       value: PlayerBody
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: ffb452f8e34fa7a499e4a629de66ec7b, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 1082271958561512970, guid: ffb452f8e34fa7a499e4a629de66ec7b, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 6887517865220988240, guid: ffb452f8e34fa7a499e4a629de66ec7b, type: 3}
+      propertyPath: m_TagString
+      value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 7078722787440015773, guid: ffb452f8e34fa7a499e4a629de66ec7b, type: 3}
       propertyPath: m_LocalRotation.w
