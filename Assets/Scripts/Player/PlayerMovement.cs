@@ -219,7 +219,7 @@ public class PlayerMovement : MonoBehaviour
             Vector3 inicioDeteccionCaida = new Vector3(body.position.x, body.position.y + 0.5f, body.position.z);
 
             //Si no detectamos Suelo a una Altura de 1.5 m
-            if (!Physics.Raycast(inicioDeteccionCaida, Vector3.down, 1f, groundMask))
+            if (!Physics.Raycast(inicioDeteccionCaida, Vector3.down, 0.70f, groundMask))
             {
                 //Activamos el Flag de ANimacion para la Caida
                 bodyAnimator.SetBool("Falling", true);
@@ -254,6 +254,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+
+        print(mRb.velocity);
 
         //Capturamos ls inputs de Direccion
         inputVertical = Input.GetAxisRaw("Vertical");
@@ -535,10 +537,10 @@ public class PlayerMovement : MonoBehaviour
     private void OnDrawGizmos()
     {
         Vector3 inicioDeteccionCaida = new Vector3(body.position.x, body.position.y + 0.5f, body.position.z);
-        Gizmos.DrawRay(inicioDeteccionCaida, Vector3.down * (groundDistance + 0.5f));
+        //Gizmos.DrawRay(inicioDeteccionCaida, Vector3.down * (groundDistance + 0.5f));
 
 
-        //Gizmos.DrawRay(inicioDeteccionCaida, Vector3.down * 1f);
+        Gizmos.DrawRay(inicioDeteccionCaida, Vector3.down * 0.70f);
 
 
     }
