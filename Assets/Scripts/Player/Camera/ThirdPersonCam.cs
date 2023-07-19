@@ -110,7 +110,7 @@ public class ThirdPersonCam : MonoBehaviour
         if (newStyle == CameraStyle.Basic)
         {
             thirdPersonCam.SetActive(true);
-            playerController.CombatMode = false;
+            playerController. CombatMode = false;
             playerAnimator.SetBool("CombatMode", false);
         }
 

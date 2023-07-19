@@ -36,7 +36,6 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float walkSpeed;
     [SerializeField] private float sprintSpeed;
     [SerializeField] private float crouchSpeed;
-    [SerializeField] private float slideSpeed;
     [SerializeField] private float wallRunSpeed;
     [SerializeField] private float climbSpeed;
 
@@ -172,7 +171,7 @@ public class PlayerMovement : MonoBehaviour
             if (EnPendiente() && mRb.velocity.y < 0.1f)
             {
                 //La velocidad deseada sera la de Deslizamiento
-                desiredMoveSpeed = slideSpeed;
+                desiredMoveSpeed = sprintSpeed;
             }
             //En caso no estemos descendiendo,
             else
