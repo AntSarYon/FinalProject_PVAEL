@@ -41,21 +41,26 @@ public class Sliding : MonoBehaviour
 
     private void Update()
     {
-        //Si se oprime la tecla Control, y se esta recibiendo Input en alguna direccion, y estamos CAMINANDO, o CORRIENDO
-        if (Input.GetKeyDown(KeyCode.LeftControl) && 
-            (playerController.InputHorizontal !=0 || playerController.InputVertical != 0) && 
-            (playerController.State == MovementState.walking || playerController.State == MovementState.sprinting))
+        //Si No estamos en Modo combate
+        if (!playerController.CombatMode)
         {
-            //Empezamos el Deslizamiento
-            StartSlide();
-        }
+            //Si se oprime la tecla Control, y se esta recibiendo Input en alguna direccion, y estamos CAMINANDO, o CORRIENDO
+            if (Input.GetKeyDown(KeyCode.LeftControl) &&
+                (playerController.InputHorizontal != 0 || playerController.InputVertical != 0) &&
+                (playerController.State == MovementState.walking || playerController.State == MovementState.sprinting))
+            {
+                //Empezamos el Deslizamiento
+                StartSlide();
+            }
 
-        //En caso se suelte la tecla Control, y ya estemos deslizandonos
-        if (Input.GetKeyUp(KeyCode.LeftControl) && playerController.Sliding)
-        {
-            //Terminamos el Deslizamiento
-            StopSlide();
+            //En caso se suelte la tecla Control, y ya estemos deslizandonos
+            if (Input.GetKeyUp(KeyCode.LeftControl) && playerController.Sliding)
+            {
+                //Terminamos el Deslizamiento
+                StopSlide();
+            }
         }
+        
     }
 
     //----------------------------------------------------------------------------------------

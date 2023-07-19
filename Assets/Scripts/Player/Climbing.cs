@@ -68,14 +68,19 @@ public class Climbing : MonoBehaviour
 
     private void Update()
     {
-        //Invocamos a la revision de Pared
-        WallCheck();
+        //SI NO ESTAMOS EN MODO COMBATE
+        if (!playerController.CombatMode)
+        {
+            //Invocamos a la revision de Pared
+            WallCheck();
 
-        //Invocamos a laMaquina de control de Estados
-        StateMachine();
+            //Invocamos a laMaquina de control de Estados
+            StateMachine();
 
-        //Si el Estado CLIMBING se encuentra activo, y NO estamos saliendo de la pared
-        if (climbing && !exitingWall) ClimbingMovement(); // --> Hacemos el movimiento de trepar
+            //Si el Estado CLIMBING se encuentra activo, y NO estamos saliendo de la pared
+            if (climbing && !exitingWall) ClimbingMovement(); // --> Hacemos el movimiento de trepar
+        }
+        
     }
 
     //-------------------------------------------------------------------

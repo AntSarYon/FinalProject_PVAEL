@@ -92,9 +92,13 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("REFERENCIAS")]
     private Climbing climbingScript;
+    private WallRunning wallRunningScript;
+    private Sliding slidingScript;
     private Rigidbody mRb;
     private AudioSource mAudioSource;
     private Animator bodyAnimator;
+
+    private bool combatMode;
 
     public Animator BodyAnimator { get => bodyAnimator; set => bodyAnimator = value; }
     public MovementState State { get => state; set => state = value; }
@@ -104,18 +108,13 @@ public class PlayerMovement : MonoBehaviour
     public bool WallRunning { get => wallRunning; set => wallRunning = value; }
     public bool Grounded { get => grounded; set => grounded = value; }
     public bool Climbing { get => climbing; set => climbing = value; }
+    public bool CombatMode { get => combatMode; set => combatMode = value; }
 
 
     //-------------------------------------------------------------
 
     private void Awake()
     {
-        //Obtenemos referencia al Script para Trepar
-        climbingScript = GetComponent<Climbing>();
-
-        //Obtenemos referencia al componente RigidBody y congelamos su rotacion
-        mRb = GetComponent<Rigidbody>();
-        mRb.freezeRotation = true;
 
         //Inicializamos flags en Falso
         sliding = false;
@@ -129,6 +128,15 @@ public class PlayerMovement : MonoBehaviour
 
     void Start()
     {
+        //Obtenemos referencia al Script para Trepar
+        climbingScript = GetComponent<Climbing>();
+        wallRunningScript = GetComponent<WallRunning>();
+        slidingScript = GetComponent<Sliding>();
+
+        //Obtenemos referencia al componente RigidBody y congelamos su rotacion
+        mRb = GetComponent<Rigidbody>();
+        mRb.freezeRotation = true;
+
         //Capturamos la informacion del CapsuleCollider del Personaje
         originalCCCenter = body.GetComponent<CapsuleCollider>().center;
         originalCCHeight = body.GetComponent<CapsuleCollider>().height;
@@ -258,9 +266,24 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        RecepcionarInputs();
 
-        print(mRb.velocity);
+        ControlarAccionesDeParkour();
 
+        StateHandler();
+
+        SpeedControl();
+
+        GroundControl();
+
+        CrouchControl();
+      
+    }
+
+    //--------------------------------------------------------------------------------------------
+
+    private void RecepcionarInputs()
+    {
         //Capturamos ls inputs de Direccion
         inputVertical = Input.GetAxisRaw("Vertical");
 
@@ -268,15 +291,30 @@ public class PlayerMovement : MonoBehaviour
         if (!wallRunning) inputHorizontal = Input.GetAxisRaw("Horizontal");
         else inputHorizontal = 0;
 
+        float horizontalCombatInput = Input.GetAxis("Horizontal");
+        float verticalCombatInput = Input.GetAxis("Vertical");
 
-        StateHandler();
+        BodyAnimator.SetFloat("VerticalWalk", verticalCombatInput);
+        BodyAnimator.SetFloat("HorizontalWalk", horizontalCombatInput);
+    }
 
-        SpeedControl();
+    //--------------------------------------------------------------------------------------------
 
-        GroundControl();
-        CrouchControl();
-        
-
+    private void ControlarAccionesDeParkour()
+    {
+        //Las acciones d Parkour solo estarán disponibles en el Modo Combate
+        if (combatMode)
+        {
+            climbingScript.enabled = false;
+            wallRunningScript.enabled = false;
+            slidingScript.enabled = false;
+        }
+        else
+        {
+            climbingScript.enabled = true;
+            wallRunningScript.enabled = true;
+            slidingScript.enabled = true;
+        }
     }
 
     //-------------------------------------------------------------------------------------------
@@ -368,28 +406,33 @@ public class PlayerMovement : MonoBehaviour
 
     private void CrouchControl()
     {
-        //Si se ORPIME el boton para agacharse...
-        if (Input.GetKeyDown(KeyCode.C))
+        //Si NO ESTAMOS EN MODO COMBATE
+        if (!combatMode)
         {
-            //Activamos el Flag de Animacion de Agachado
-            BodyAnimator.SetBool("IsCrouch", true);
+            //Si se ORPIME el boton para agacharse...
+            if (Input.GetKeyDown(KeyCode.C))
+            {
+                //Activamos el Flag de Animacion de Agachado
+                BodyAnimator.SetBool("IsCrouch", true);
 
-            //Asignamos los nuevos valores al CapsuleCollider
-            body.GetComponent<CapsuleCollider>().center = crouchCCCenter;
-            body.GetComponent<CapsuleCollider>().height = crouchCCHeight;
-            body.GetComponent<CapsuleCollider>().radius = crouchCCRadius;
-        }
-        //Si se SUELTA el boton para agacharse...
-        if (Input.GetKeyUp(KeyCode.C))
-        {
-            //Desactivamos el Flag de Animacion para levantarnos
-            BodyAnimator.SetBool("IsCrouch", false);
+                //Asignamos los nuevos valores al CapsuleCollider
+                body.GetComponent<CapsuleCollider>().center = crouchCCCenter;
+                body.GetComponent<CapsuleCollider>().height = crouchCCHeight;
+                body.GetComponent<CapsuleCollider>().radius = crouchCCRadius;
+            }
+            //Si se SUELTA el boton para agacharse...
+            if (Input.GetKeyUp(KeyCode.C))
+            {
+                //Desactivamos el Flag de Animacion para levantarnos
+                BodyAnimator.SetBool("IsCrouch", false);
 
-            //Asignamos los valores originales al CapsuleCollider
-            body.GetComponent<CapsuleCollider>().center = originalCCCenter;
-            body.GetComponent<CapsuleCollider>().height = originalCCHeight;
-            body.GetComponent<CapsuleCollider>().radius = originalCCRadius;
+                //Asignamos los valores originales al CapsuleCollider
+                body.GetComponent<CapsuleCollider>().center = originalCCCenter;
+                body.GetComponent<CapsuleCollider>().height = originalCCHeight;
+                body.GetComponent<CapsuleCollider>().radius = originalCCRadius;
+            }
         }
+        
     }
 
     //-------------------------------------------------------------------

@@ -87,9 +87,13 @@ public class WallRunning : MonoBehaviour
 
     private void Update()
     {
-        RevisarParedes();
+        //Si no estamos en Modo Combate
+        if (!playerController.CombatMode)
+        {
+            RevisarParedes();
 
-        StateMachine();
+            StateMachine();
+        }
     }
 
     //-----------------------------------------------------------------------------------------
