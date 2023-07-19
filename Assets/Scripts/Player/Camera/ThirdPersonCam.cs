@@ -8,22 +8,32 @@ public enum CameraStyle
     Combat
 }
 
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+
 public class ThirdPersonCam : MonoBehaviour
 {
     [Header("Referencias")]
+    //Orientacion del Player
     [SerializeField] private Transform playerOrientation;
+
+    //Transform y componentes del GO Player
     [SerializeField] private Transform player;
     private PlayerMovement playerController;
+    private Rigidbody rbPlayer;
+
+    //Transform del Cuerpo del Personaje
     [SerializeField] private Transform playerBody;
-    [SerializeField] private Rigidbody rbPlayer;
+    private Animator playerAnimator;
 
     [Header("Alternando modos de camara")]
     private CameraStyle camCurrentStyle;
     public Transform combatLookAt;
 
+    [Header("Tipos de Camaras")]
     public GameObject thirdPersonCam;
     public GameObject combatCam;
 
+    //Velocidad de Rotacion
     public float rotationSpeed;
 
     //-------------------------------------------------------------------------
@@ -34,7 +44,10 @@ public class ThirdPersonCam : MonoBehaviour
         combatCam.SetActive(false);
         thirdPersonCam.SetActive(true);
 
+        //Obtenemos el Controller, el RB, y el Animator del Player
         playerController = player.GetComponent<PlayerMovement>();
+        rbPlayer = player.GetComponent<Rigidbody>();
+        playerAnimator = playerBody.GetComponent<Animator>();
 
         //Hacemos que el Cursor no sea visible
         Cursor.lockState = CursorLockMode.Locked;
@@ -46,8 +59,11 @@ public class ThirdPersonCam : MonoBehaviour
     private void Update()
     {
         //Si oprimimos el boton V
-        if (Input.GetKeyDown(KeyCode.V))
+        if (Input.GetKeyDown(KeyCode.T))
         {
+            //Pasamos a TPose brevemente para hacer el cambio
+            playerController.PasarATpose();
+
             //Alternamos el modo de camara
             if (camCurrentStyle == CameraStyle.Basic) SwitchCameraStyle(CameraStyle.Combat);
             else SwitchCameraStyle(CameraStyle.Basic);

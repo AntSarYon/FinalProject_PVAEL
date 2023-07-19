@@ -17,6 +17,8 @@ public enum MovementState
 
 };
 
+// - - - - - - - - - - - - - - - - - - - - - - - -
+
 public class PlayerMovement : MonoBehaviour
 {
     //Direccion de Input
@@ -123,6 +125,8 @@ public class PlayerMovement : MonoBehaviour
         //mAudioSource = GetComponent<AudioSource>();
     }
 
+    //-------------------------------------------------------------
+
     void Start()
     {
         //Capturamos la informacion del CapsuleCollider del Personaje
@@ -219,7 +223,7 @@ public class PlayerMovement : MonoBehaviour
             Vector3 inicioDeteccionCaida = new Vector3(body.position.x, body.position.y + 0.5f, body.position.z);
 
             //Si no detectamos Suelo a una Altura de 1.5 m
-            if (!Physics.Raycast(inicioDeteccionCaida, Vector3.down, 0.70f, groundMask))
+            if (!Physics.Raycast(inicioDeteccionCaida, Vector3.down, 0.85f, groundMask))
             {
                 //Activamos el Flag de ANimacion para la Caida
                 bodyAnimator.SetBool("Falling", true);
@@ -479,9 +483,6 @@ public class PlayerMovement : MonoBehaviour
             mRb.useGravity = !EnPendiente();
         }
 
-        
-
-
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -500,7 +501,8 @@ public class PlayerMovement : MonoBehaviour
 
             //Si el Player est? en el suelo, y esta listo para saltar
             //O bien esta saliendo de una pendiente
-            if (grounded && readyToJump || saliendoDePendiente && readyToJump)
+            //Y no estamos deslizandonos
+            if (grounded && readyToJump && !sliding || saliendoDePendiente && readyToJump && !sliding)
             {
                 //Desactivamos el Flag de ListoParaSaltar
                 readyToJump = false;
@@ -533,6 +535,23 @@ public class PlayerMovement : MonoBehaviour
     #endregion
     //------------------------------------------------------------------------
 
+    public void PasarATpose()
+    {
+        //Disparamos el Trigger de Animacion de TPose
+        bodyAnimator.SetTrigger("TPose");
+        //Desactivamos las Animaciones del Player
+        bodyAnimator.SetBool("IsCrouch", false);
+        bodyAnimator.SetBool("IsWalking", false);
+        bodyAnimator.SetBool("IsRunning", false);
+        bodyAnimator.SetBool("LeftWallRun", false);
+        bodyAnimator.SetBool("RightWallRun", false);
+        bodyAnimator.SetBool("Falling", false);
+        bodyAnimator.SetBool("Climbing", false);
+        bodyAnimator.SetBool("RightWallRun", false);
+    }
+
+    //--------------------------------------------------------------------------------------
+
 
     private void OnDrawGizmos()
     {
@@ -540,7 +559,7 @@ public class PlayerMovement : MonoBehaviour
         //Gizmos.DrawRay(inicioDeteccionCaida, Vector3.down * (groundDistance + 0.5f));
 
 
-        Gizmos.DrawRay(inicioDeteccionCaida, Vector3.down * 0.70f);
+        Gizmos.DrawRay(inicioDeteccionCaida, Vector3.down * 0.85f);
 
 
     }
