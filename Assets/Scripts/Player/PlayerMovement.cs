@@ -98,6 +98,7 @@ public class PlayerMovement : MonoBehaviour
     private Animator bodyAnimator;
 
     private bool combatMode;
+    private bool attacking;
 
     public Animator BodyAnimator { get => bodyAnimator; set => bodyAnimator = value; }
     public MovementState State { get => state; set => state = value; }
@@ -108,12 +109,15 @@ public class PlayerMovement : MonoBehaviour
     public bool Grounded { get => grounded; set => grounded = value; }
     public bool Climbing { get => climbing; set => climbing = value; }
     public bool CombatMode { get => combatMode; set => combatMode = value; }
+    public bool Attacking { get => attacking; set => attacking = value; }
 
 
     //-------------------------------------------------------------
 
     private void Awake()
     {
+        combatMode = false;
+        attacking = false;
 
         //Inicializamos flags en Falso
         sliding = false;
@@ -283,18 +287,18 @@ public class PlayerMovement : MonoBehaviour
 
     private void RecepcionarInputs()
     {
-        //Capturamos ls inputs de Direccion
-        inputVertical = Input.GetAxisRaw("Vertical");
+            //Capturamos ls inputs de Direccion
+            inputVertical = Input.GetAxisRaw("Vertical");
 
-        //Controlamos la Captura de Input Horizontal si es que estamos haciendo WallRunning
-        if (!wallRunning) inputHorizontal = Input.GetAxisRaw("Horizontal");
-        else inputHorizontal = 0;
+            //Controlamos la Captura de Input Horizontal si es que estamos haciendo WallRunning
+            if (!wallRunning) inputHorizontal = Input.GetAxisRaw("Horizontal");
+            else inputHorizontal = 0;
 
-        float horizontalCombatInput = Input.GetAxis("Horizontal");
-        float verticalCombatInput = Input.GetAxis("Vertical");
+            float horizontalCombatInput = Input.GetAxis("Horizontal");
+            float verticalCombatInput = Input.GetAxis("Vertical");
 
-        BodyAnimator.SetFloat("VerticalWalk", verticalCombatInput);
-        BodyAnimator.SetFloat("HorizontalWalk", horizontalCombatInput);
+            BodyAnimator.SetFloat("VerticalWalk", verticalCombatInput);
+            BodyAnimator.SetFloat("HorizontalWalk", horizontalCombatInput);
     }
 
     //--------------------------------------------------------------------------------------------
@@ -471,97 +475,96 @@ public class PlayerMovement : MonoBehaviour
 
     private void Move()
     {
-        //Para empezar, Si estamos saliendo de una apred; no hagas nada
-        if (climbingScript.ExitingWall) return;
+            //Para empezar, Si estamos saliendo de una apred; no hagas nada
+            if (climbingScript.ExitingWall) return;
 
-        //Asignamos la direccion de movimeinto considerando la orientacion del Player
-        mDirection = orientation.forward * inputVertical + orientation.right * inputHorizontal;
+            //Asignamos la direccion de movimeinto considerando la orientacion del Player
+            mDirection = orientation.forward * inputVertical + orientation.right * inputHorizontal;
 
-        //Si nos encontramos en una Pendiente, 
-        if (EnPendiente())
-        {
-            //Activamos o desactivamos el Flag de animacion de Caminar dependiendo de
-            //si nos estamos moviendo, o no
-            if (mDirection == Vector3.zero) BodyAnimator.SetBool("IsWalking", false);
-            else BodyAnimator.SetBool("IsWalking", true);
-
-            //Si NO estamos saliendo(saltando) de ella
-            if (!saliendoDePendiente)
+            //Si nos encontramos en una Pendiente, 
+            if (EnPendiente())
             {
-                //Aplicamos una fuerza mayor en la direccion Proyectada 
-                mRb.AddForce(ObtenerDireccionDePendiente(mDirection) * moveSpeed * 20f, ForceMode.Force);
+                //Activamos o desactivamos el Flag de animacion de Caminar dependiendo de
+                //si nos estamos moviendo, o no
+                if (mDirection == Vector3.zero) BodyAnimator.SetBool("IsWalking", false);
+                else BodyAnimator.SetBool("IsWalking", true);
 
-                //Si nuestra velocidad en Y se ve afectada (rebotamos mientras subimos)
-                if (mRb.velocity.y > 0)
+                //Si NO estamos saliendo(saltando) de ella
+                if (!saliendoDePendiente)
                 {
-                    mRb.AddForce(Vector3.down * 60f, ForceMode.Force);
+                    //Aplicamos una fuerza mayor en la direccion Proyectada 
+                    mRb.AddForce(ObtenerDireccionDePendiente(mDirection) * moveSpeed * 20f, ForceMode.Force);
+
+                    //Si nuestra velocidad en Y se ve afectada (rebotamos mientras subimos)
+                    if (mRb.velocity.y > 0)
+                    {
+                        mRb.AddForce(Vector3.down * 60f, ForceMode.Force);
+                    }
                 }
             }
-        }
 
-        //Si el Player esta tocando el juelo
-        else if (grounded)
-        {
-            //Activamos o desactivamos el Flag de animacion de Caminar dependiendo de
-            //si nos estamos moviendo, o no
-            if (mDirection != Vector3.zero) BodyAnimator.SetBool("IsWalking", true);
-            else BodyAnimator.SetBool("IsWalking", false);
+            //Si el Player esta tocando el juelo
+            else if (grounded)
+            {
+                //Activamos o desactivamos el Flag de animacion de Caminar dependiendo de
+                //si nos estamos moviendo, o no
+                if (mDirection != Vector3.zero) BodyAnimator.SetBool("IsWalking", true);
+                else BodyAnimator.SetBool("IsWalking", false);
 
-            //Aplicamos una fuerza al RB del Player para moverlo
-            mRb.AddForce(mDirection.normalized * moveSpeed * 10f, ForceMode.Force);
-        }
+                //Aplicamos una fuerza al RB del Player para moverlo
+                mRb.AddForce(mDirection.normalized * moveSpeed * 10f, ForceMode.Force);
+            }
 
-        //Si estamos en el Aire
-        else if(!grounded) 
-        {
-            //Aplicamos una fuerza, incluyendo el multiplicador de Aire
-            mRb.AddForce(mDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
-        }
+            //Si estamos en el Aire
+            else if (!grounded)
+            {
+                //Aplicamos una fuerza, incluyendo el multiplicador de Aire
+                mRb.AddForce(mDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
+            }
 
-        //Si no estamos haciendo EallRunning
-        if (!wallRunning)
-        {
-            //Modificamos la Gravedad cuando estamos en la pendiente
-            mRb.useGravity = !EnPendiente();
-        }
-
+            //Si no estamos haciendo EallRunning
+            if (!wallRunning)
+            {
+                //Modificamos la Gravedad cuando estamos en la pendiente
+                mRb.useGravity = !EnPendiente();
+            }
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
     private void OnJump(InputValue value)
     {
-        //Si se oprime el boton de Salto
-        if (value.isPressed)
-        {
-            //Si estamos en una pendiente
-            if (EnPendiente())
+            //Si se oprime el boton de Salto
+            if (value.isPressed)
             {
-                //Activamos el Flag de Saliendo de Pared
-                saliendoDePendiente = true;
+                //Si estamos en una pendiente
+                if (EnPendiente())
+                {
+                    //Activamos el Flag de Saliendo de Pared
+                    saliendoDePendiente = true;
+                }
+
+                //Si el Player est? en el suelo, y esta listo para saltar
+                //O bien esta saliendo de una pendiente
+                //Y no estamos deslizandonos
+                if (grounded && readyToJump && !sliding || saliendoDePendiente && readyToJump && !sliding)
+                {
+                    //Desactivamos el Flag de ListoParaSaltar
+                    readyToJump = false;
+
+                    //Reiniciamos la velocidad en Y
+                    mRb.velocity = new Vector3(mRb.velocity.x, 0f, mRb.velocity.z);
+
+                    //Disparamos el Trigger de Animacion para saltar
+                    bodyAnimator.SetTrigger("Jump");
+
+                    //Saltamos A?adiendo una fuerza de impulso
+                    mRb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+
+                    //Tras esperar un determinado tiempo (coolDown) podemos volver a saltar
+                    Invoke(nameof(ResetJump), jumpCooldown);
+                }
             }
-
-            //Si el Player est? en el suelo, y esta listo para saltar
-            //O bien esta saliendo de una pendiente
-            //Y no estamos deslizandonos
-            if (grounded && readyToJump && !sliding || saliendoDePendiente && readyToJump && !sliding)
-            {
-                //Desactivamos el Flag de ListoParaSaltar
-                readyToJump = false;
-
-                //Reiniciamos la velocidad en Y
-                mRb.velocity = new Vector3(mRb.velocity.x, 0f, mRb.velocity.z);
-
-                //Disparamos el Trigger de Animacion para saltar
-                bodyAnimator.SetTrigger("Jump");
-
-                //Saltamos A?adiendo una fuerza de impulso
-                mRb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
-
-                //Tras esperar un determinado tiempo (coolDown) podemos volver a saltar
-                Invoke(nameof(ResetJump), jumpCooldown);
-            }
-        }
     }
 
     //-------------------------------------------------------------------------------------
