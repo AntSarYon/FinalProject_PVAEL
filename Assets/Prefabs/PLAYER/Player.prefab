@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 207457222}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.5, y: 0.5, z: 0}
+  m_LocalPosition: {x: 0.5, y: 0.45, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -131,7 +131,6 @@ MonoBehaviour:
   walkSpeed: 5
   sprintSpeed: 10
   crouchSpeed: 3
-  slideSpeed: 20
   wallRunSpeed: 10
   climbSpeed: 1
   jumpForce: 6.5
@@ -164,7 +163,7 @@ MonoBehaviour:
     m_Bits: 128
   camara: {fileID: 0}
   wallRunForce: 200
-  maxWallRunTime: 0.8
+  maxWallRunTime: 0.7
   wallClimbSpeed: 3
   wallJumpUpForce: 5
   wallJumpSideForce: 8
@@ -317,19 +316,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7078722787440015773, guid: ffb452f8e34fa7a499e4a629de66ec7b, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.3595063
+      value: 0.35950628
       objectReference: {fileID: 0}
     - target: {fileID: 7078722787440015773, guid: ffb452f8e34fa7a499e4a629de66ec7b, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.5471022
+      value: 0.54710215
       objectReference: {fileID: 0}
     - target: {fileID: 7078722787440015773, guid: ffb452f8e34fa7a499e4a629de66ec7b, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.5914038
+      value: 0.5914037
       objectReference: {fileID: 0}
     - target: {fileID: 7078722787440015773, guid: ffb452f8e34fa7a499e4a629de66ec7b, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.47082493
+      value: -0.47082487
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ffb452f8e34fa7a499e4a629de66ec7b, type: 3}
@@ -377,3 +376,15 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+--- !u!114 &1833719152
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6709199196414296998}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c6c918cb5e11a24d8d5627549af3b74, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

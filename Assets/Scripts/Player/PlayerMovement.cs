@@ -100,6 +100,9 @@ public class PlayerMovement : MonoBehaviour
     private bool combatMode;
     private bool attacking;
 
+    private SwordCombo swcScript;
+    private MeleeCombo mcScript;
+
     public Animator BodyAnimator { get => bodyAnimator; set => bodyAnimator = value; }
     public MovementState State { get => state; set => state = value; }
     public float InputVertical { get => inputVertical; set => inputVertical = value; }
@@ -146,6 +149,18 @@ public class PlayerMovement : MonoBehaviour
         originalCCRadius = body.GetComponent<CapsuleCollider>().radius;
 
         BodyAnimator = body.GetComponent<Animator>();
+
+        //Obtenemos y desactivamos el script de Combo de Ataque
+
+        if (body.TryGetComponent<SwordCombo>(out swcScript))
+        {
+            swcScript.enabled = false;
+        }
+
+        else if (body.TryGetComponent<MeleeCombo>(out mcScript))
+        {
+            mcScript.enabled = false;
+        }
     }
 
     //-------------------------------------------------------------
@@ -308,12 +323,30 @@ public class PlayerMovement : MonoBehaviour
         //Las acciones d Parkour solo estarán disponibles en el Modo Combate
         if (combatMode)
         {
+            if (mcScript != null)
+            {
+                mcScript.enabled = true;
+            }
+            else if (swcScript != null)
+            {
+                swcScript.enabled = true;
+            }
+
             climbingScript.enabled = false;
             wallRunningScript.enabled = false;
             slidingScript.enabled = false;
         }
         else
         {
+            if (mcScript != null)
+            {
+                mcScript.enabled = false;
+            }
+            else if (swcScript != null)
+            {
+                swcScript.enabled = false;
+            }
+
             climbingScript.enabled = true;
             wallRunningScript.enabled = true;
             slidingScript.enabled = true;
@@ -567,6 +600,7 @@ public class PlayerMovement : MonoBehaviour
             }
     }
 
+
     //-------------------------------------------------------------------------------------
 
     private void ResetJump()
@@ -595,17 +629,7 @@ public class PlayerMovement : MonoBehaviour
         bodyAnimator.SetBool("RightWallRun", false);
     }
 
+
+
     //--------------------------------------------------------------------------------------
-
-
-    private void OnDrawGizmos()
-    {
-        Vector3 inicioDeteccionCaida = new Vector3(body.position.x, body.position.y + 0.5f, body.position.z);
-        //Gizmos.DrawRay(inicioDeteccionCaida, Vector3.down * (groundDistance + 0.5f));
-
-
-        Gizmos.DrawRay(inicioDeteccionCaida, Vector3.down * 0.85f);
-
-
-    }
 }

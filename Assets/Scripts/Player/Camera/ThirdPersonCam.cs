@@ -116,6 +116,20 @@ public class ThirdPersonCam : MonoBehaviour
 
         if (newStyle == CameraStyle.Combat)
         {
+            //Reiniciamos el Numero de Clicks para que no haya Bugs en los ataques
+            SwordCombo swcScript = null;
+            MeleeCombo mcScript= null;
+
+            if (playerBody.TryGetComponent<SwordCombo>(out swcScript))
+            {
+                swcScript.CantidadClicks = 0;
+            }
+
+            else if (playerBody.TryGetComponent<MeleeCombo>(out mcScript))
+            {
+                mcScript.CantidadClicks = 0;
+            }
+
             combatCam.SetActive(true);
             playerController.CombatMode = true;
             playerAnimator.SetBool("CombatMode", true);
