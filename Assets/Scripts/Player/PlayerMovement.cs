@@ -614,10 +614,10 @@ public class PlayerMovement : MonoBehaviour
     #endregion
     //------------------------------------------------------------------------
 
-    public void PasarATpose()
+    public void PasarAModoCombate()
     {
         //Disparamos el Trigger de Animacion de TPose
-        bodyAnimator.SetTrigger("TPose");
+        bodyAnimator.SetTrigger("StartCombat");
         //Desactivamos las Animaciones del Player
         bodyAnimator.SetBool("IsCrouch", false);
         bodyAnimator.SetBool("IsWalking", false);

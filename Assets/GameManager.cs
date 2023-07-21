@@ -18,11 +18,12 @@ public class GameManager : MonoBehaviour
     //Variable para almacenar el último Transform
     private Transform playerLastTransform;
 
-
     // Start is called before the first frame update
     void Start()
     {
-        
+        camaraPrincipal = transform.Find("CameraHolder").Find("PlayerCamera").GetComponent<ThirdPersonCam>();
+        thirdPersonCamera = transform.Find("ThirdPersonCamera").GetComponent<CinemachineFreeLook>();
+        combatCamera = transform.Find("CombatCamera").GetComponent<CinemachineFreeLook>();
     }
 
     // Update is called once per frame

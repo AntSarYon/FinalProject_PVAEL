@@ -90,7 +90,7 @@ public class ThirdPersonCam : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.T))
         {
             //Pasamos a TPose brevemente para hacer el cambio
-            playerController.PasarATpose();
+            playerController.PasarAModoCombate();
 
             //Cambiamos el modo de camara
             if (camCurrentStyle == CameraStyle.Basic) SwitchCameraStyle(CameraStyle.Combat);
