@@ -318,6 +318,18 @@ public class PlayerMovement : MonoBehaviour
 
     //--------------------------------------------------------------------------------------------
 
+    private void ComprobarTipo()
+    {
+        if (GameManager.Instance.CamaraPrincipal.CamCurrentStyle == CameraStyle.Combat)
+        {
+            combatMode = true;
+        }
+        else
+        {
+            combatMode = false;
+        }
+    }
+
     private void ControlarAccionesDeParkour()
     {
         //Las acciones d Parkour solo estarán disponibles en el Modo Combate
@@ -618,6 +630,21 @@ public class PlayerMovement : MonoBehaviour
     {
         //Disparamos el Trigger de Animacion de TPose
         bodyAnimator.SetTrigger("StartCombat");
+        //Desactivamos las Animaciones del Player
+        bodyAnimator.SetBool("IsCrouch", false);
+        bodyAnimator.SetBool("IsWalking", false);
+        bodyAnimator.SetBool("IsRunning", false);
+        bodyAnimator.SetBool("LeftWallRun", false);
+        bodyAnimator.SetBool("RightWallRun", false);
+        bodyAnimator.SetBool("Falling", false);
+        bodyAnimator.SetBool("Climbing", false);
+        bodyAnimator.SetBool("RightWallRun", false);
+    }
+
+    public void PasarATpose()
+    {
+        //Disparamos el Trigger de Animacion de TPose
+        bodyAnimator.SetTrigger("TPose");
         //Desactivamos las Animaciones del Player
         bodyAnimator.SetBool("IsCrouch", false);
         bodyAnimator.SetBool("IsWalking", false);

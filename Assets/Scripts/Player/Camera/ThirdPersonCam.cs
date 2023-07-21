@@ -27,7 +27,7 @@ public class ThirdPersonCam : MonoBehaviour
 
     [Header("Alternando modos de camara")]
     private CameraStyle camCurrentStyle;
-    public Transform combatLookAt;
+    public Transform CombatLookAt;
 
     [Header("Tipos de Camaras")]
     public GameObject thirdPersonCam;
@@ -35,6 +35,11 @@ public class ThirdPersonCam : MonoBehaviour
 
     //Velocidad de Rotacion
     public float rotationSpeed;
+
+    public Transform PlayerOrientation { get => playerOrientation; set => playerOrientation = value; }
+    public Transform Player { get => player; set => player = value; }
+    public Transform PlayerBody { get => playerBody; set => playerBody = value; }
+    public CameraStyle CamCurrentStyle { get => camCurrentStyle; set => camCurrentStyle = value; }
 
     //-------------------------------------------------------------------------
 
@@ -87,7 +92,7 @@ public class ThirdPersonCam : MonoBehaviour
     private void ControlarCambioDeCamara()
     {
         //Si oprimimos el boton T
-        if (Input.GetKeyDown(KeyCode.T))
+        if (Input.GetKeyDown(KeyCode.V))
         {
             //Pasamos a TPose brevemente para hacer el cambio
             playerController.PasarAModoCombate();
@@ -193,10 +198,10 @@ public class ThirdPersonCam : MonoBehaviour
     {
         //Calculamos la direccion FRONTAL en que base al punto de Combate
         Vector3 dirToCombatLookAt =
-            combatLookAt.position -
+            CombatLookAt.position -
             new Vector3(
                 transform.position.x,
-                combatLookAt.position.y, //Usamos la altura del Player, en lugar de la de la camara
+                CombatLookAt.position.y, //Usamos la altura del Player, en lugar de la de la camara
                 transform.position.z
                 );
 

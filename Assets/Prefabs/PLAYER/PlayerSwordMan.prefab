@@ -300,7 +300,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 8fc5a48c9d311f04787f5cf7da5ab1f0, type: 3}
       propertyPath: m_Name
-      value: SowrdmanBody
+      value: PlayerBody
       objectReference: {fileID: 0}
     - target: {fileID: 2042953256698253358, guid: 8fc5a48c9d311f04787f5cf7da5ab1f0, type: 3}
       propertyPath: m_LocalPosition.x
@@ -452,18 +452,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
---- !u!114 &7378048494667623230
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7684673486073747042}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04b1f21704266fa46942bdabe87681da, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &7378048494038892381
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -480,3 +468,16 @@ MonoBehaviour:
   clipAgitandoSuave: {fileID: 8300000, guid: 330aeb2e150fa724abec35c9f6800e63, type: 3}
   clipAgitando: {fileID: 8300000, guid: 45de2830c6326c04bbde90bc04c5c98e, type: 3}
   clipAgitandoFuerte: {fileID: 8300000, guid: b618e528100165144a0f7e56d3c101f3, type: 3}
+  clipGolpeSeco: {fileID: 8300000, guid: 4badaf571847f1d46be702c3cc6c8301, type: 3}
+--- !u!114 &7378048494667623230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7684673486073747042}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04b1f21704266fa46942bdabe87681da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
