@@ -464,6 +464,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9579e084e9fada47a8b2e16c45a41fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  clipGrito: {fileID: 8300000, guid: 862d1cc451bd4544cae58d2b1bddb91f, type: 3}
   clipCorte: {fileID: 8300000, guid: 83f8c62beffd453449dc33efa7f77b92, type: 3}
   clipAgitandoSuave: {fileID: 8300000, guid: 330aeb2e150fa724abec35c9f6800e63, type: 3}
   clipAgitando: {fileID: 8300000, guid: 45de2830c6326c04bbde90bc04c5c98e, type: 3}

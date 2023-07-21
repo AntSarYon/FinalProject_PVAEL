@@ -23,22 +23,29 @@ public class GameManager : MonoBehaviour
     private GameObject ultimoPersonaje;
     private Transform playerLastTransform;
 
-    //private AudioSource mAudioSource;
+    private AudioSource mAudioSource;
     [SerializeField] private AudioClip clipCambio;
+
+    [SerializeField] private AudioSource pacificMusic;
+    [SerializeField] private AudioSource battleMusic;
 
     public GameObject UltimoPersonaje { get => ultimoPersonaje; set => ultimoPersonaje = value; }
     public ThirdPersonCam CamaraPrincipal { get => camaraPrincipal; set => camaraPrincipal = value; }
+    public AudioSource PacificMusic { get => pacificMusic; set => pacificMusic = value; }
+    public AudioSource BattleMusic { get => battleMusic; set => battleMusic = value; }
+    public int IndicePersonaje { get => indicePersonaje; set => indicePersonaje = value; }
 
     private void Awake()
     {
-        //mAudioSource = GetComponent<AudioSource>();
+        mAudioSource = GetComponent<AudioSource>();
+
         playerLastTransform = null;
 
         //Asignamos esta instancia del GameManager
         Instance = this;
 
         //El indice empieza en 0 -> apuntando al MotionMan
-        indicePersonaje = 1;
+        IndicePersonaje = 1;
         
     }
 
@@ -49,11 +56,9 @@ public class GameManager : MonoBehaviour
 
         ObtenerCamarasDeEscena();
 
-        AsignarPersonajeACamara();
-
         ActivarSoloPersonajeJugable();
 
-        
+        AsignarPersonajeACamara();
     }
 
     //---------------------------------------------------------------------------------------
@@ -75,12 +80,12 @@ public class GameManager : MonoBehaviour
     }
 
     //-------------------------------------------------------------
-
+    
     private void ActivarSoloPersonajeJugable()
     {
         for (int i = 0; i< arrPersonajes.Length; i++)
         {
-            if (i == indicePersonaje)
+            if (i == IndicePersonaje)
             {
                 //Activamos el perosnaje
                 arrPersonajes[i].gameObject.SetActive(true);
@@ -95,6 +100,7 @@ public class GameManager : MonoBehaviour
                     ultimoPersonaje.transform.position = playerLastTransform.position;
                     ultimoPersonaje.transform.rotation = playerLastTransform.rotation;
                     ultimoPersonaje.transform.localScale = playerLastTransform.localScale;
+                    ultimoPersonaje.GetComponent<PlayerMovement>().CombatMode = playerLastTransform.GetComponent<PlayerMovement>().CombatMode;
 
                     //Disparamos el Trigger de TPose
                     ultimoPersonaje.transform.Find("PlayerBody").GetComponent<Animator>().SetTrigger("TPose");
@@ -115,20 +121,24 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+
+    
     //------------------------------------------------------------------------------
     private void AsignarPersonajeACamara()
     {
-        CamaraPrincipal.PlayerOrientation = arrPersonajes[indicePersonaje].transform.transform.Find("Orientation");
-        CamaraPrincipal.Player = arrPersonajes[indicePersonaje].transform;
-        CamaraPrincipal.PlayerBody = arrPersonajes[indicePersonaje].transform.Find("PlayerBody");
-        CamaraPrincipal.CombatLookAt = arrPersonajes[indicePersonaje].transform.Find("Orientation").Find("CombatLookAt");
+        CamaraPrincipal.PlayerOrientation = ultimoPersonaje.transform.transform.Find("Orientation");
+        CamaraPrincipal.Player = ultimoPersonaje.transform;
+        CamaraPrincipal.PlayerBody = ultimoPersonaje.transform.Find("PlayerBody");
+        CamaraPrincipal.CombatLookAt = ultimoPersonaje.transform.Find("Orientation").Find("CombatLookAt");
 
-        thirdPersonCamera.Follow = arrPersonajes[indicePersonaje].transform;
-        thirdPersonCamera.LookAt = arrPersonajes[indicePersonaje].transform;
+        thirdPersonCamera.Follow = ultimoPersonaje.transform;
+        thirdPersonCamera.LookAt = ultimoPersonaje.transform;
 
-        combatCamera.Follow = arrPersonajes[indicePersonaje].transform;
-        combatCamera.LookAt = arrPersonajes[indicePersonaje].transform.Find("Orientation").Find("CombatLookAt");
+        combatCamera.Follow = ultimoPersonaje.transform;
+        combatCamera.LookAt = ultimoPersonaje.transform.Find("Orientation").Find("CombatLookAt");
     }
+
+    
     //------------------------------------------------------------------------------
     private void ControlarCambioDePersonaje()
     {
@@ -136,11 +146,13 @@ public class GameManager : MonoBehaviour
         playerLastTransform = ultimoPersonaje.transform;
 
         //controlamos el indice
-        if (indicePersonaje == 0)
+        if (IndicePersonaje == 0)
         {
-            indicePersonaje = 1;
+            IndicePersonaje = 1;
         }
-        else indicePersonaje = 0;
+        else IndicePersonaje = 0;
+
+        mAudioSource.PlayOneShot(clipCambio, 0.7f);
 
         ActivarSoloPersonajeJugable();
         AsignarPersonajeACamara();
@@ -150,7 +162,9 @@ public class GameManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.T))
         {
-            ControlarCambioDePersonaje();
+            ultimoPersonaje.GetComponent<PlayerMovement>().PasarATpose();
+            
+            Invoke(nameof(ControlarCambioDePersonaje),0.35f);
         }
     }
 }

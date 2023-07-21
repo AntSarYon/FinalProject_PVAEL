@@ -19,6 +19,6 @@ public class MainMenu : MonoBehaviour
 
     public void EscenaJuego()
     {
-        SceneManager.LoadScene("Coliseo1");
+        SceneManager.LoadScene("ANTONIOTestRoom");
     }
 }

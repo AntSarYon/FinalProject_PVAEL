@@ -94,12 +94,22 @@ public class ThirdPersonCam : MonoBehaviour
         //Si oprimimos el boton T
         if (Input.GetKeyDown(KeyCode.V))
         {
-            //Pasamos a TPose brevemente para hacer el cambio
-            playerController.PasarAModoCombate();
+            
+        
+        //Cambiamos el modo de camara
+        if (camCurrentStyle == CameraStyle.Basic)
+            {
+                //Pasamos a TPose brevemente para hacer el cambio
+                playerController.PasarAModoCombate();
 
-            //Cambiamos el modo de camara
-            if (camCurrentStyle == CameraStyle.Basic) SwitchCameraStyle(CameraStyle.Combat);
-            else SwitchCameraStyle(CameraStyle.Basic);
+                SwitchCameraStyle(CameraStyle.Combat);
+            }
+            else
+            {
+                playerController.PasarATpose();
+                SwitchCameraStyle(CameraStyle.Basic);
+            }
+
         }
     }
 
@@ -117,6 +127,10 @@ public class ThirdPersonCam : MonoBehaviour
             thirdPersonCam.SetActive(true);
             playerController. CombatMode = false;
             playerAnimator.SetBool("CombatMode", false);
+
+            GameManager.Instance.BattleMusic.Stop();
+            GameManager.Instance.PacificMusic.Play();
+
         }
 
         if (newStyle == CameraStyle.Combat)

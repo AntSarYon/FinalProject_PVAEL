@@ -5,6 +5,7 @@ using UnityEngine;
 public class SwordSoundsController : MonoBehaviour
 {
     //Clips de Sonidos de Golpe
+    [SerializeField] private AudioClip clipGrito;
     [SerializeField] private AudioClip clipCorte;
     [SerializeField] private AudioClip clipAgitandoSuave;
     [SerializeField] private AudioClip clipAgitando;
@@ -47,4 +48,23 @@ public class SwordSoundsController : MonoBehaviour
     {
         mAudiosource.PlayOneShot(clipGolpeSeco, 0.7f);
     }
+
+    public void ReproducirGrito()
+    {
+        mAudiosource.PlayOneShot(clipGrito, 1f);
+    }
+
+    public void EmpezarMusicaDeBatalla()
+    {
+        GameManager.Instance.PacificMusic.Stop();
+        GameManager.Instance.BattleMusic.Play();
+    }
+
+    public void DetenerMusicaDeBatalla()
+    {
+        GameManager.Instance.BattleMusic.Stop();
+        GameManager.Instance.PacificMusic.Play();
+    }
+
+    
 }
