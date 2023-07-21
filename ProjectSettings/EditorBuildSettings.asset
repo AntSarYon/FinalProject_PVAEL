@@ -4,6 +4,12 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Juego/MenuPrincipal.unity
+    guid: 4d50189ea74f7834289997a437152f79
+  - enabled: 1
+    path: Assets/Scenes/Juego/Coliseo1.unity
+    guid: 042fcb16d649a9f4086a40cf4ba3b6ef
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 041c15fe14ac08f408f264eccdb9d571, type: 2}
