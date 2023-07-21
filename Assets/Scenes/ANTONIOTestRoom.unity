@@ -5104,11 +5104,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1218437290162529268, guid: 89b4d9d77b0c72142b63fe26b191e64b, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.000000033934263
+      value: -0.000000033934263
       objectReference: {fileID: 0}
     - target: {fileID: 1218437290162529268, guid: 89b4d9d77b0c72142b63fe26b191e64b, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.0000000057187184
+      value: 0.0000000057187184
       objectReference: {fileID: 0}
     - target: {fileID: 1218437290162529270, guid: 89b4d9d77b0c72142b63fe26b191e64b, type: 3}
       propertyPath: player
@@ -5126,6 +5126,10 @@ PrefabInstance:
       propertyPath: CombatLookAt
       value: 
       objectReference: {fileID: 1656586905}
+    - target: {fileID: 1218437290162529270, guid: 89b4d9d77b0c72142b63fe26b191e64b, type: 3}
+      propertyPath: rotationSpeed
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 1218437290162529270, guid: 89b4d9d77b0c72142b63fe26b191e64b, type: 3}
       propertyPath: thirdPersonCam
       value: 
@@ -5399,11 +5403,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4433262261795158360, guid: bbbffb7a863fc5a4daab8936ad7d550e, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.000000016967133
+      value: -0.000000016967132
       objectReference: {fileID: 0}
     - target: {fileID: 4433262261795158360, guid: bbbffb7a863fc5a4daab8936ad7d550e, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.0000000028593594
+      value: 0.000000002859359
       objectReference: {fileID: 0}
     - target: {fileID: 4433262261935131398, guid: bbbffb7a863fc5a4daab8936ad7d550e, type: 3}
       propertyPath: m_LocalRotation.w
