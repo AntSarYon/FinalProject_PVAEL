@@ -15,4 +15,9 @@ public class MenuUIAnimationsController : MonoBehaviour
     {
         MenuUIAnimator.Play("TitleTranslation");
     }
+
+    public void ShowNMT()
+    {
+        MenuUIAnimator.Play("NMTCameo");
+    }
 }

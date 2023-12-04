@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,27 +15,71 @@ public class MainMenu : MonoBehaviour
     [Header("Titulo")]
     [SerializeField] private GameObject Title;
 
+    [Header("clip Pergamino")]
+    [SerializeField] private AudioClip clipPergamine;
+
+    private AudioSource mAudioSource;
+    private Animator mAnimator;
 
     //----------------------------------------------------
 
-    public void ManageSettingsPanel()
+    private void Awake()
+    {
+        mAnimator = GetComponent<Animator>();
+        mAudioSource = GetComponent<AudioSource>();
+    }
+
+    //----------------------------------------------------
+
+    private void Start()
+    {
+        settingsPanel.SetActive(false);
+    }
+
+    //----------------------------------------------------
+
+    public void ShowSettingsPanel()
     {
         //Activamos o desactivamos el Panel de Settings dependiendo de su estado
 
-        if (settingsPanel.activeSelf)
-        {
-            settingsPanel.SetActive(false);
-            buttonsParent.SetActive(true);
-            Title.SetActive(true);
-        }
+        settingsPanel.SetActive(true);
+        buttonsParent.SetActive(false);
+        Title.SetActive(false);  
 
-        else
-        {
-            settingsPanel.SetActive(true);
-            buttonsParent.SetActive(false);
-            Title.SetActive(false);
-        }
-            
+    }
+
+    //----------------------------------------------------
+
+    public void HideSettingsPanel()
+    {
+        //Activamos o desactivamos el Panel de Settings dependiendo de su estado
+        
+        settingsPanel.SetActive(false);
+        buttonsParent.SetActive(true);
+        Title.SetActive(true);
+
+    }
+
+    //----------------------------------------------------
+
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
+
+    //----------------------------------------------------
+
+    public void PlayOptionSound()
+    {
+        mAudioSource.PlayOneShot(clipPergamine, 1f);
+    }
+
+    //----------------------------------------------------
+
+    public void FadeInStartGame()
+    {
+        mAnimator.Play("FadeIn");
+        Invoke(nameof(StartGame), 2.5f);
     }
 
     //----------------------------------------------------
