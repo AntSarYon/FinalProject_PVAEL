@@ -18,11 +18,9 @@ public class GameManager : MonoBehaviour
     private AudioSource mAudioSource;
     [SerializeField] private AudioClip clipCambio;
 
-    [SerializeField] private AudioSource pacificMusic;
     [SerializeField] private AudioSource battleMusic;
 
     public ThirdPersonCam CamaraPrincipal { get => camaraPrincipal; set => camaraPrincipal = value; }
-    public AudioSource PacificMusic { get => pacificMusic; set => pacificMusic = value; }
     public AudioSource BattleMusic { get => battleMusic; set => battleMusic = value; }
 
     private void Awake()

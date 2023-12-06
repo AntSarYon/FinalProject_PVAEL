@@ -54,17 +54,5 @@ public class SwordSoundsController : MonoBehaviour
         mAudiosource.PlayOneShot(clipGrito, 1f);
     }
 
-    public void EmpezarMusicaDeBatalla()
-    {
-        GameManager.Instance.PacificMusic.Stop();
-        GameManager.Instance.BattleMusic.Play();
-    }
-
-    public void DetenerMusicaDeBatalla()
-    {
-        GameManager.Instance.BattleMusic.Stop();
-        GameManager.Instance.PacificMusic.Play();
-    }
-
     
 }

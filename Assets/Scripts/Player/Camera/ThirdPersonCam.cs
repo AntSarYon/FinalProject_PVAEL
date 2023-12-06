@@ -128,9 +128,6 @@ public class ThirdPersonCam : MonoBehaviour
             playerController. CombatMode = false;
             playerAnimator.SetBool("CombatMode", false);
 
-            GameManager.Instance.BattleMusic.Stop();
-            GameManager.Instance.PacificMusic.Play();
-
         }
 
         if (newStyle == CameraStyle.Combat)
