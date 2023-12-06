@@ -6,10 +6,43 @@ public class SwordCombo : MonoBehaviour
 {
     private Animator mAnimator;
 
-    int cantidadClicks;
-    bool puedoDarClick;
+    private int cantidadClicks;
+    private bool puedoDarClick;
+
+    [SerializeField] private GameObject HitBox;
+    [SerializeField] private GameObject LegHitBox;
 
     public int CantidadClicks { get => cantidadClicks; set => cantidadClicks = value; }
+
+    //----------------------------------------------------------
+
+    public void EnableHitBox()
+    {
+        HitBox.SetActive(true);
+    }
+
+    public void DisableHitBox()
+    {
+        HitBox.SetActive(false);
+    }
+
+    public void EnableLegHitBox()
+    {
+        LegHitBox.SetActive(true);
+    }
+
+    public void DisableLegHitBox()
+    {
+        LegHitBox.SetActive(false);
+    }
+
+    //----------------------------------------------------------
+
+    void Start()
+    {
+        HitBox.SetActive(false);
+        LegHitBox.SetActive(false);
+    }
 
     //----------------------------------------------------------
 
@@ -20,6 +53,8 @@ public class SwordCombo : MonoBehaviour
         puedoDarClick = true;
     }
 
+    //----------------------------------------------------------
+
     // Update is called once per frame
     void Update()
     {
@@ -28,6 +63,8 @@ public class SwordCombo : MonoBehaviour
             IniciarCombo();
         }
     }
+
+    //----------------------------------------------------------
 
     public void IniciarCombo()
     {
@@ -40,6 +77,8 @@ public class SwordCombo : MonoBehaviour
             mAnimator.SetInteger("SwordAttack", 1);
         }
     }
+
+    //----------------------------------------------------------
 
     public void VerificarCombo()
     {
