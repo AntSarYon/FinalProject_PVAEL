@@ -35,13 +35,17 @@ public class EnemySimpleIA : MonoBehaviour
     bool alreadyAttacked;
     bool isAttacking;
 
+    [Header("PunchBoxes")]
+    public GameObject punchBox1;
+    public GameObject punchBox2;
 
     [Header("Rangos")]
     public float sightRange;
     public float attackRange;
+    public float meleeRange;
 
     [Header("Estados")]
-    public bool playerInSightRange, playerInAttackRange;
+    public bool playerInSightRange, playerInAttackRange, playerInMeleeRange;
 
     [Header("Salus del enemigo")]
     public float health;
@@ -65,12 +69,18 @@ public class EnemySimpleIA : MonoBehaviour
         //Comprobamos el rango de visión y de Ataque
         playerInSightRange = Physics.CheckSphere(transform.position,sightRange,WhatIsPlayer);
         playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, WhatIsPlayer);
+        playerInMeleeRange = Physics.CheckSphere(transform.position, meleeRange, WhatIsPlayer);
 
         if (!isAttacking)
         {
+            if (playerInAttackRange && playerInSightRange && !playerInMeleeRange) AttackPlayer();
+
+            if (playerInAttackRange && playerInSightRange && playerInMeleeRange) AttackMeleePlayer();
+
             if (!playerInSightRange && !playerInAttackRange)
             {
                 bodyAnimator.SetBool("Throwing", false);
+                bodyAnimator.SetBool("MeleeAttacking", false);
                 Patroling();
             }
 
@@ -78,11 +88,9 @@ public class EnemySimpleIA : MonoBehaviour
             if (playerInSightRange && !playerInAttackRange)
             {
                 bodyAnimator.SetBool("Throwing", false);
+                bodyAnimator.SetBool("MeleeAttacking", false);
                 ChasePlayer();
             }
-
-
-            if (playerInAttackRange && playerInSightRange) AttackPlayer();
         }
         
     }
@@ -152,8 +160,29 @@ public class EnemySimpleIA : MonoBehaviour
         if (!alreadyAttacked)
         {
             bodyAnimator.SetBool("Throwing",true);
+            //bodyAnimator.SetBool("MeleeAttacking", false);
         }
     }
+
+    //-----------------------------------------------------------------------------
+
+    private void AttackMeleePlayer()
+    {
+        //Hacemos que no se mueva
+        agent.SetDestination(transform.position);
+
+        //Que mire al jugador
+        transform.LookAt(player);
+
+        //Si aun no ha atacado
+        if (!alreadyAttacked)
+        {
+            bodyAnimator.SetBool("MeleeAttacking", true);
+            //bodyAnimator.SetBool("Throwing", false);
+        }
+    }
+
+    //-----------------------------------------------------------------------------
 
     public void ThrowProjectile()
     {
@@ -164,6 +193,28 @@ public class EnemySimpleIA : MonoBehaviour
         //Activamos el Flag de Ya atacó
         alreadyAttacked = true;
     }
+
+    //-----------------------------------------------------------------------------
+
+    public void EnablePuchBoxes()
+    {
+        punchBox1.SetActive(true);
+        punchBox1.SetActive(true);
+
+        //Activamos el Flag de Ya atacó
+        alreadyAttacked = true;
+    }
+
+    public void DisablePuchBoxes()
+    {
+        punchBox1.SetActive(false);
+        punchBox1.SetActive(false);
+
+        //Activamos el Flag de Ya atacó
+        alreadyAttacked = false;
+    }
+
+    //-----------------------------------------------------------------------------
 
     public void AnnounceAttack()
     {
@@ -179,12 +230,16 @@ public class EnemySimpleIA : MonoBehaviour
         isAttacking = false;
     }
 
+    //-----------------------------------------------------------------------------
+
     public void TakeDamage(int Damage)
     {
         health -= Damage;
 
         if (health <= 0) Invoke(nameof(KillEnemy), 0.5f);
     }
+
+    //-----------------------------------------------------------------------------
 
     private void KillEnemy()
     {
@@ -195,6 +250,15 @@ public class EnemySimpleIA : MonoBehaviour
 
     //-----------------------------------------------------------------------------
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.transform.CompareTag("HitBox"))
+        {
+            //Reducimos en 5 unidades la Salud
+            TakeDamage(5);
 
+            Debug.Log("Recibi 5 de daño");
+        }
+    }
 
 }

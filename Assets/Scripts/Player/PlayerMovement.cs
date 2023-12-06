@@ -21,6 +21,8 @@ public enum MovementState
 
 public class PlayerMovement : MonoBehaviour
 {
+    private float health;
+
     //Direccion de Input
     private Vector3 mDirection;
 
@@ -119,6 +121,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void Awake()
     {
+        health = 100; 
+
         combatMode = false;
         attacking = false;
 
@@ -654,6 +658,28 @@ public class PlayerMovement : MonoBehaviour
         bodyAnimator.SetBool("Falling", false);
         bodyAnimator.SetBool("Climbing", false);
         bodyAnimator.SetBool("RightWallRun", false);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.transform.CompareTag("enemyHitBox"))
+        {
+            //Reducimos en 5 unidades la Salud
+            health -= 5;
+
+            Debug.Log("AUCH");
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.transform.CompareTag("enemyHitBox"))
+        {
+            //Reducimos en 5 unidades la Salud
+            health -= 5;
+
+            Debug.Log("AUCH");
+        }
     }
 
 

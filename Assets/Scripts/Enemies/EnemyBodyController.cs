@@ -26,4 +26,14 @@ public class EnemyBodyController : MonoBehaviour
     {
         mIA.AnnounceAttack();
     }
+
+    public void EnablePuchBoxes()
+    {
+        mIA.EnablePuchBoxes();
+    }
+
+    public void DisablePuchBoxes()
+    {
+        mIA.DisablePuchBoxes();
+    }
 }
