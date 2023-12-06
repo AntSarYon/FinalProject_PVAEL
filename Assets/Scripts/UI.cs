@@ -5,9 +5,6 @@ using UnityEngine.UI;
 
 public class UI : MonoBehaviour
 {
-    [SerializeField] private GameObject imagenMotionMan;
-    [SerializeField] private GameObject imagenSwordMan;
-
     [SerializeField] private GameObject modoRecorrido;
     [SerializeField] private GameObject modoCombate;
 
@@ -23,17 +20,6 @@ public class UI : MonoBehaviour
         {
             modoRecorrido.SetActive(true);
             modoCombate.SetActive(false);
-        }
-
-        if (GameManager.Instance.IndicePersonaje == 0)
-        {
-            imagenMotionMan.SetActive(true);
-            imagenSwordMan.SetActive(false);
-        }
-        else if (GameManager.Instance.IndicePersonaje == 1)
-        {
-            imagenMotionMan.SetActive(false);
-            imagenSwordMan.SetActive(true);
         }
     }
 }
